@@ -1,7 +1,5 @@
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
@@ -14,23 +12,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body{
+body {
   margin: 0;
   padding: 0;
   min-width: 320px;
   min-height: 100vh;
   box-sizing: border-box;
-  background-color: #FFFFFF;
-} 
-
+  background-color: #ffffff;
+}
 
 #root {
   min-height: 100vh;
-} 
-
-
- 
-
+}
 
 @layer base {
   :root {
@@ -86,17 +79,6 @@ body{
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-} 
-
-
- 
-
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
 }
+
+
