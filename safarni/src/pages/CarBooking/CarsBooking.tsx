@@ -3,12 +3,14 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { Button } from "@/components/ui/button"
 import ModelCard from "@/component/cards/ModelCard"
 import CarCard from "@/component/cards/CarCard"
+import { useNavigate } from 'react-router-dom';
 
 export default function CarsBooking() {
+    const navigate = useNavigate();
   return (
     <div className="p-7">
         <div className="relative flex items-center justify-center">
-            <Button className="rounded-full bg-gray-100 absolute left-8 w-10 h-10"  >
+            <Button onClick={() => navigate(-1)} className="rounded-full bg-gray-100 absolute left-8 w-10 h-10"  >
                 <ChevronLeft />
             </Button>
             <InputGroup className="w-3/4 border-gray-200">
@@ -18,9 +20,9 @@ export default function CarsBooking() {
                 </InputGroupAddon>
             </InputGroup>
         </div>
-        <div className="pl-8 pt-5 space-y-2.5">
+        <div className="pl-8 pt-8 space-y-2.5">
             <h1 className="text-2xl font-medium font-poppins">Brands</h1>
-            <div className="flex space-x-5">
+            <div className="flex space-x-5 overflow-x-auto scrollbar-hide pb-2 no-scrollbar">
             <ModelCard/>
             <ModelCard/>
             <ModelCard/>

@@ -2,8 +2,10 @@
 import { Button } from "@/components/ui/button"
 import { ChevronLeft } from 'lucide-react';
 import  FavoriteCards  from "@/component/cards/FavoriteCard"
+import { useNavigate } from 'react-router-dom';
+
 function Favorite() {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
   return (
     <div className="p-7">
           {/* <div className="flex h-screen justify-center items-center flex-col gap-5">
@@ -12,8 +14,7 @@ function Favorite() {
              
         </div> */}
       <div className="relative flex items-center justify-center ">
-        {/* onClick={() => navigate(-1)} */}
-        <Button className="rounded-full bg-gray-100 absolute left-8 w-10 h-10"  size="icon" >
+        <Button onClick={() => navigate(-1)} className="rounded-full bg-gray-100 absolute left-8 w-10 h-10"  size="icon" >
             <ChevronLeft/>
         </Button>
         <p className="font-poppins text-3xl">Favorite</p>

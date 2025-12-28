@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import pic from "@/assets/car2.png"
+import { useNavigate } from 'react-router-dom';
 
 interface CarCardProps {
   title: string
@@ -19,8 +20,9 @@ export function CarCard({
   fuelType = "Petrol",
 
 }: CarCardProps) {
+    const navigate = useNavigate();
   return (
-    <Card className={cn(" p-6 bg-white shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_5px_rgba(0,0,0,0.05)] border-none rounded-3xl w-fit")}>
+    <Card className={cn(" p-6 bg-white shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_5px_rgba(0,0,0,0.05)] border-none rounded-3xl ")}>
       <div className="space-y-6">
         <div className="grid grid-cols-2 items-center">
         <h3 className="text-2xl font-bold text-slate-900">{title}</h3>
@@ -50,7 +52,9 @@ export function CarCard({
           </Button>
           <Button
             variant="outline"
+            onClick={() => navigate(`/car-details`)}
             className=" flex-1 border-[#1e40af] text-[#1e40af] hover:bg-blue-50 font-bold h-14 rounded-xl bg-transparent text-lg hover:scale-105"
+
           >
             Detail
           </Button>
