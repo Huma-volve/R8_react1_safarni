@@ -1,6 +1,8 @@
 // import Favorite from "@/pages/Favorite/Favorite"
 
-import SignUp from "./pages/auth/SignUp"
+import ForgetPassword from "./pages/auth/ForgetPassword"
+
+// import SignUp from "./pages/auth/SignUp"
 
 // import Login from "./pages/auth/Login"
 
@@ -14,11 +16,12 @@ function App() {
     <>
 
     {/* <Login/> */}
-    <SignUp/>
+    {/* <SignUp/> */}
 
     {/* <GetStarted/> */}
       {/* <CarsBooking/> */}
       {/* <Favorite/> */}
+      <ForgetPassword/>
     </>
   )
 }
