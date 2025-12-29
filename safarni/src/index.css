@@ -1,7 +1,5 @@
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 :root {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
@@ -90,13 +88,3 @@ body{
 
 
  
-
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
