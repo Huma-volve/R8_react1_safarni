@@ -22,7 +22,7 @@ const [faceIdEnabled, setFaceIdEnabled] = useState(false);
         <div className="rounded-2xl p-px bg-linear-to-b from-[#687ad3] to-[#da437a] max-w-6xl   ">
         
           <div className="rounded-2xl bg-white p-6 space-y-4">
-            <h1 className="text-2xl font-semibold text-center font-sans mb-6">
+            <h1 className="text-2xl  text-center font-poppins mb-6">
               Account & Security
             </h1>
 

@@ -42,7 +42,7 @@ const ProfileMain: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6 ">
       <div className="max-w-4xl mx-auto space-y-4">
         {/* Header البروفايل */}
         <div className="rounded-2xl p-px bg-linear-to-b from-[#687ad3] to-[#da437a]">
@@ -62,8 +62,8 @@ const ProfileMain: React.FC = () => {
               </div>
 
               <div>
-                <h2 className="text-xl font-sans font-semibold text-[#4B5563] pb-2">{user.name}</h2>
-                <p className="text-[16px] font-medium text-[#6B6E80]">{user.email}</p>
+                <h2 className="text-xl font-montserrat font-semibold text-[#4B5563] pb-2">{user.name}</h2>
+                <p className="text-[16px] font-medium font-poppins text-[#6B6E80]">{user.email}</p>
               </div>
             </div>
           </div>
@@ -71,13 +71,13 @@ const ProfileMain: React.FC = () => {
 
         {/* القائمة */}
         <div className="rounded-2xl p-px bg-linear-to-b from-[#687ad3] to-[#da437a]">
-          <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
+          <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4 ">
             {menuItems.map((item) => (
               <Link 
                 key={item.id} 
                 to={item.path} 
                 className="flex items-center justify-between p-4 mb-3 border border-gray-100 rounded-lg 
-                shadow bg-white font-normal font-sans"
+                shadow bg-white  font-poppins "
               >
                 <div className="flex items-center gap-3">
                   <div className="text-[#374151]">
@@ -95,7 +95,7 @@ const ProfileMain: React.FC = () => {
                 shadow bg-white font-normal"
             >
               <LogOut className="w-5 h-5" />
-              <span className="font-medium font-sans">Logout</span>
+              <span className="font-medium font-poppins">Logout</span>
             </button>
           </div>
         </div>
@@ -107,7 +107,7 @@ const ProfileMain: React.FC = () => {
     <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md md:max-w-lg p-4 sm:p-6 md:p-8
                     transform transition-all duration-300 ease-out scale-95 opacity-0
                     animate-modal-in">
-      <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 text-center mb-4 sm:mb-6">
+      <h3 className="text-lg sm:text-xl md:text-2xl font-medium font-poppins text-gray-900 text-center mb-4 sm:mb-6">
         Do You Want To Register The Exit Already ?
       </h3>
 

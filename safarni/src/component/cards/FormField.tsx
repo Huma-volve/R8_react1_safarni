@@ -15,13 +15,8 @@ const FormField: React.FC<Props> = ({
 }) => {
   return (
     <div className="relative">
-      <label className="mb-1 block text-sm font-medium text-[#373737]"
-      style={{
-    fontFamily: 'Inter, sans-serif',
-    fontWeight: 500,
-    fontSize: '17px',
-    lineHeight: '20px',
-  }}>
+      <label className="mb-1 block text-sm font-medium text-[#373737] font-montserrat"
+     >
         {label}
       </label>
 
@@ -37,7 +32,7 @@ const FormField: React.FC<Props> = ({
           value={value}
           readOnly
           disabled
-          className="w-full rounded-lg border border-gray-200 px-10 py-2.5 text-sm bg-white cursor-default text-gray-500"
+          className="w-full rounded-lg border border-gray-200 px-10 py-2.5 text-sm bg-white cursor-default text-gray-500 font-poppins"
         />
       </div>
     </div>

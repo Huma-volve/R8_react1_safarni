@@ -26,20 +26,13 @@ const PersonalInfo: React.FC = () => {
 
         <div className="rounded-2xl p-px bg-linear-to-b from-[#687ad3] to-[#da437a]">
           <div className="rounded-2xl bg-white p-9">
-            <h2
-  style={{
-    fontFamily: 'Poppins, sans-serif',
-    fontWeight: 500,
-    fontSize: '26px',
-    lineHeight: '150%',
-    textAlign: 'center',
-    paddingBottom: '20px',
-  }}
+            <h2 className="font-poppins text-[26px] text-center "
+  
 >
   Personal Information
 </h2>
 
-            <div className="space-y-6">
+            <div className="space-y-6 ">
               <FormField
                 label="Name"
                 name="name"

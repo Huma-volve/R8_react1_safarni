@@ -80,7 +80,7 @@ const MyBooking: React.FC = () => {
         </button>
 
         {/* Title */}
-        <h1 className="text-2xl font-semibold text-foreground text-center mb-8">My Booking</h1>
+        <h1 className="text-2xl font-poppins  text-center mb-8">My Booking</h1>
 
        {/* Tabs */}
 <div className="relative mb-8">
@@ -111,7 +111,7 @@ const MyBooking: React.FC = () => {
           className={`shrink-0 min-w-30 sm:flex-1
             flex items-center justify-center gap-1
             border border-gray-200 py-3 px-5 rounded-full
-            font-medium transition-all
+            font-medium font-poppins transition-all
             ${
               activeTab === tab.id
                 ? 'bg-blue-50 text-blue-600'
@@ -179,27 +179,27 @@ const MyBooking: React.FC = () => {
                     </div>
 
                     <div className="text-right ">
-                      <div className="text-xl font-normal text-gray-900 ">{flight.arrivalTime}</div>
-                      <div className="text-sm text-gray-500 font-semibold">{flight.to}</div>
+                      <div className="text-xl font-normal text-gray-900 font-poppins ">{flight.arrivalTime}</div>
+                      <div className="text-sm text-gray-500  font-poppins">{flight.to}</div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-4 gap-4 pt-4 border-t border-gray-300">
                     <div>
                       <div className="text-[15px] ml-3 font-semibold  text-gray-500">{flight.gate}</div>
-                      <div className="text-[17px] text-gray-900 font-semibold">Gate</div>
+                      <div className="text-[17px] text-gray-900 font-poppins">Gate</div>
                     </div>
                     <div>
                       <div className="text-[15px] ml-3 font-semibold  text-gray-500">{flight.seat}</div>
-                      <div className="text-[17px]  font-semibold text-gray-900">Seat</div>
+                      <div className="text-[17px]  font-poppins text-gray-900">Seat</div>
                     </div>
                     <div>
-                      <div className="text-[15px] ml-6 font-semibold  text-gray-500">{flight.terminal}</div>
-                      <div className="text-[17px]  font-semibold text-gray-900">Terminal</div>
+                      <div className="text-[15px] ml-6 font-poppins text-gray-500">{flight.terminal}</div>
+                      <div className="text-[17px]  font-poppins text-gray-900">Terminal</div>
                     </div>
                     <div className=" text-right mr-5">
-                    <div className="text-xl text-gray-500">{flight.flightNumber}</div>
-                    <div className="ml-4 text-sm font-medium text-gray-900">Flight</div>
+                    <div className="text-xl text-gray-500 font-poppins">{flight.flightNumber}</div>
+                    <div className="ml-4 text-sm font-poppins  text-gray-900">Flight</div>
                   </div>
                   </div>
 
@@ -220,8 +220,8 @@ const MyBooking: React.FC = () => {
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-xl font-medium  text-gray-900 mb-4">{car.carModel}</h3>
-<div className="flex flex-col sm:flex-row sm:gap-64 gap-2 text-[17px] font-normal font-sans text-gray-500">
+                      <h3 className="text-xl font-poppins  text-gray-900 mb-4">{car.carModel}</h3>
+<div className="flex flex-col sm:flex-row sm:gap-64 gap-2 text-[17px] font-normal font-poppins text-gray-500">
                         <span>{car.type}</span>
                         <span>{car.seats} seats</span>
                         <span>{car.fuelType}</span>
@@ -258,13 +258,13 @@ const MyBooking: React.FC = () => {
                     <img src={tour.image} alt={tour.title} className="w-24 h-24 rounded-xl object-cover" />
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-[15px] text-gray-600 font-bold">{tour.type}</span>
+                        <span className="text-[15px] text-gray-600 font-poppins font-medium">{tour.type}</span>
                         <div className="flex items-center gap-1">
                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                           <span className="text-sm font-medium">{tour.rating}</span>
                         </div>
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{tour.title}</h3>
+                      <h3 className="text-lg font-medium font-poppins text-gray-900 mb-2">{tour.title}</h3>
                       <p className="text-[15px] font-medium text-gray-500">From <span className='text-blue-600'>{tour.price}$</span> Per Person</p>
                     </div>
                   </div>
@@ -288,7 +288,7 @@ const MyBooking: React.FC = () => {
                         {hotel.discount}
                       </span>
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{hotel.name}</h3>
+                        <h3 className="text-lg font-poppins font-medium text-gray-900">{hotel.name}</h3>
                         <div className="flex items-center gap-1 relative -top-9">
                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                           <span className="text-sm font-medium">{hotel.rating}</span>
