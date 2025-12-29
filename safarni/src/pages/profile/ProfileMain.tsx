@@ -5,6 +5,7 @@ import type { User as UserType, MenuItem } from './types';
 
 const ProfileMain: React.FC = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  
 
   const user: UserType = {
     name: 'Knee Due',
