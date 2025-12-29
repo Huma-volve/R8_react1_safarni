@@ -14,12 +14,12 @@ const PersonalInfo: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen  p-6">
       <div className="mx-auto max-w-5xl">
 
         <button
           onClick={() => navigate('/profile')}
-          className="mb-6 text-sm text-gray-600  border-transparent bg-gray-100 rounded-full p-2 cursor-pointer "
+          className="mb-4 text-sm text-gray-600  border-transparent bg-gray-100 rounded-full p-2 cursor-pointer "
         >
           <ChevronLeft className="inline-block w-6 h-7 mr-1" />
         </button>
