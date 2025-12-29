@@ -1,10 +1,10 @@
-import FlightBooking from "./pages/FlightBooking";
+import { FlightBookingFlow } from "./pages/FlightBookingFlow";
 
 function App() {
   return (
     <>
       <div className="container">
-        <FlightBooking />
+        <FlightBookingFlow />
       </div>
     </>
   );

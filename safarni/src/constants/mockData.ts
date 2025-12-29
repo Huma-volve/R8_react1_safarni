@@ -14,3 +14,39 @@ export const PASSENGER_OPTIONS = [
   { value: 3, label: "3 Passengers" },
   { value: 4, label: "4+ Passengers" },
 ];
+
+export const MOCK_FLIGHTS: Flight[] = [
+  {
+    id: "f1",
+    departureTime: "7:05 AM",
+    arrivalTime: "8:55 PM",
+    originCode: "YUL",
+    destinationCode: "YUL",
+    duration: "18:55",
+    airline: "Scoot",
+    price: 1300,
+    layover: { location: "YYZ", duration: "3:55" },
+  },
+  {
+    id: "f2",
+    departureTime: "9:05 AM",
+    arrivalTime: "4:05 PM",
+    originCode: "YUL",
+    destinationCode: "YUL",
+    duration: "18:55",
+    airline: "Scoot",
+    price: 1400,
+    layover: { location: "YYZ", duration: "3:55" },
+  },
+  {
+    id: "f3",
+    departureTime: "9:05 AM",
+    arrivalTime: "4:55 PM",
+    originCode: "YUL",
+    destinationCode: "YUL",
+    duration: "18:55",
+    airline: "Scoot",
+    price: 1300,
+    layover: { location: "YYZ", duration: "3:55" },
+  },
+];

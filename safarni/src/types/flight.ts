@@ -14,3 +14,18 @@ export interface LocationOption {
   name: string;
   country: string;
 }
+
+export interface Flight {
+  id: string;
+  departureTime: string;
+  arrivalTime: string;
+  originCode: string;
+  destinationCode: string;
+  duration: string;
+  airline: string;
+  price: number;
+  layover?: {
+    location: string;
+    duration: string;
+  };
+}

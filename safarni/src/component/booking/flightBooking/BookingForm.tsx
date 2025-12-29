@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { TripTypeSelector } from "./TripTypeSelector";
-import { Input } from "../ui/Input";
-import { Button } from "../ui/Button";
-import type { BookingFormData, TripType } from "../../types/flight";
-import { PASSENGER_OPTIONS } from "../../constants/mockData";
+import { Input } from "../../ui/Input";
+import { Button } from "../../ui/Button";
+import type { BookingFormData, TripType } from "../../../types/flight";
+import { PASSENGER_OPTIONS } from "../../../constants/mockData";
 
-export const BookingForm: React.FC = () => {
+interface BookingFormProps {
+  onSubmit: (data: BookingFormData) => void;
+}
+
+export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState<BookingFormData>({
     tripType: "round-trip",
     location: "Cairo, Egypt",
@@ -19,20 +23,14 @@ export const BookingForm: React.FC = () => {
   const handleInputChange = (field: keyof BookingFormData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Searching for flights with data:", formData);
-    alert(
-      "Searching for flights from " +
-        formData.location +
-        " to " +
-        formData.destination
-    );
+    onSubmit(formData); // Call parent handler
   };
 
   return (
-    <div className="w-full max-w-2xl bg-white p-6 lg:p-10 rounded-3xl">
+    <div className="w-full max-w-2xl  p-6  lg:pr-10 lg:pt-0 rounded-3xl">
       <TripTypeSelector
         activeType={formData.tripType}
         onChange={(type) => handleInputChange("tripType", type)}
@@ -74,14 +72,18 @@ export const BookingForm: React.FC = () => {
           </label>
           <div className="relative">
             <select
-              className="w-full appearance-none px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all cursor-pointer"
+              className="w-full appearance-none px-4 py-3 bg-transparent border border-slate-200 rounded-xl text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all cursor-pointer"
               value={formData.passengers}
               onChange={(e) =>
                 handleInputChange("passengers", Number(e.target.value))
               }
             >
               {PASSENGER_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
+                <option
+                  key={opt.value}
+                  value={opt.value}
+                  className="bg-white text-slate-600 hover:bg-blue-50 cursor-pointer"
+                >
                   {opt.label}
                 </option>
               ))}
@@ -93,7 +95,11 @@ export const BookingForm: React.FC = () => {
           </div>
         </div>
 
-        <Button fullWidth type="submit" className="mt-4 py-4 text-lg">
+        <Button
+          fullWidth
+          type="submit"
+          className=" cursor-pointer mt-4 py-4 text-lg"
+        >
           Search Flights
         </Button>
       </form>

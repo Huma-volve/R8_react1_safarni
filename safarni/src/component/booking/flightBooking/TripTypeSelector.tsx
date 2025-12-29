@@ -1,5 +1,5 @@
 import React from "react";
-import type { TripType } from "../../types/flight";
+import type { TripType } from "../../../types/flight";
 import { RefreshCcw, ArrowRight } from "lucide-react";
 
 interface TripTypeSelectorProps {
@@ -18,17 +18,17 @@ export const TripTypeSelector: React.FC<TripTypeSelectorProps> = ({
   ];
 
   return (
-    <div className="flex flex-wrap gap-3 mb-8">
+    <div className="flex flex-wrap gap-3 mb-8 ">
       {options.map((option) => (
         <button
           key={option.id}
           onClick={() => onChange(option.id)}
-          className={`
+          className={` cursor-pointer
             flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium transition-all
             ${
               activeType === option.id
                 ? "bg-[#EBF2FF] text-[#2546A6] shadow-sm"
-                : "bg-slate-50 text-slate-500 hover:bg-slate-100"
+                : "bg-slate-100 text-slate-500 hover:bg-slate-200"
             }
           `}
         >
