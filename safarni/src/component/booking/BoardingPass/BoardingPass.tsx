@@ -73,7 +73,7 @@ export const BoardingPass: React.FC<BoardingPassProps> = ({
                 </div>
 
                 <div className="flex flex-col items-center flex-1 px-4">
-                  <Plane size={16} className="text-slate-300 mb-1" />
+                  <Plane size={16} className="mb-1 rotate-45 text-[#111928]" />
                   <div className="h-[1px] w-full bg-slate-200"></div>
                   <span className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">
                     13h00

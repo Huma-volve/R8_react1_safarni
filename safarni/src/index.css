@@ -1,4 +1,3 @@
-
 @import "tailwindcss";
 
 :root {
@@ -10,6 +9,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.leaflet-control-attribution {
+  display: none !important;
 }
 
 body {
@@ -80,5 +83,3 @@ body {
     --chart-5: 340 75% 55%;
   }
 }
-
-
