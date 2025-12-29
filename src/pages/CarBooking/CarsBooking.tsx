@@ -3,9 +3,13 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { Button } from "@/components/ui/button"
 import ModelCard from "@/component/cards/ModelCard"
 import CarCard from "@/component/cards/CarCard"
+import Navbar from "@/component/Navbar"
+
 
 export default function CarsBooking() {
   return (
+    <>
+    <Navbar/>
     <div className="p-7">
         <div className="relative flex items-center justify-center">
             <Button className="rounded-full bg-gray-100 absolute left-8 w-10 h-10"  >
@@ -58,5 +62,6 @@ export default function CarsBooking() {
             </div>
         </div>
     </div>
+    </>
   )
 }

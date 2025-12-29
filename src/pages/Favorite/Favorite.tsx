@@ -2,9 +2,13 @@
 import { Button } from "@/components/ui/button"
 import { ChevronLeft } from 'lucide-react';
 import  FavoriteCards  from "@/component/cards/FavoriteCard"
+import Navbar from "@/component/Navbar";
 function Favorite() {
     // const navigate = useNavigate();
   return (
+    <>
+    <Navbar/>
+    
     <div className="p-7">
           {/* <div className="flex h-screen justify-center items-center flex-col gap-5">
             <h1>Your favorite!</h1>
@@ -29,6 +33,7 @@ function Favorite() {
         <FavoriteCards title="dasljkd" price={5} rating={5} type="asld" />
       </div>
     </div>
+    </>
   )
 }
 export default Favorite;
