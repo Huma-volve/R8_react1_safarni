@@ -1,18 +1,14 @@
-// import Home from "./pages/HOME-PAGE/Home"
-// import CityDetails from "./pages/SEARCH-PAGE/CityDetails"
-import FilterPanel from "./pages/SEARCH-PAGE/FilterPanel"
-// import SearchPage from "./pages/SEARCH-PAGE/SearchPage"
+import { Routes, Route } from 'react-router-dom';
+import Profile from './pages/profile';
+// import Favorite from "@/pages/Favorite/Favorite"
+import CarsBooking from "@/pages/CarBooking/CarsBooking"
 
 function App() {
-
   return (
-    <>
-        <FilterPanel/>
-       {/* <CityDetails/> */}
-         {/* <SearchPage/> */}
-         {/* <Home/> */}
-    </>
+    <Routes>
+      <Route path="/profile/*" element={<Profile />} />
+    </Routes>
   )
 }
 
-export default App
+export default App;
