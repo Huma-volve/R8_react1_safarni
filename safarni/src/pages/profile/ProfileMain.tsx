@@ -5,6 +5,8 @@ import type { User as UserType, MenuItem } from './types';
 
 const ProfileMain: React.FC = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [avatar, setAvatar] = useState('/src/assets/Avatar.png');
+
   
 
   const user: UserType = {
@@ -51,15 +53,29 @@ const ProfileMain: React.FC = () => {
             <div className="flex items-center gap-4">
               <div className="relative rounded-full p-px bg-linear-to-b from-[#687ad3] to-[#da437a]">
                 <img 
-                  src={user.avatar} 
+                 src={avatar}
                   alt={user.name}
                   className="w-20 h-20 rounded-full object-cover"
                 />
-                <button 
-                  className="absolute top-1/2 -right-3 -translate-y-1/2 bg-[#FFFFFFB8] rounded-full p-0.5 shadow-md border border-gray-200 transition-colors"
-                >
+                <button
+  type="button"
+  onClick={() => document.getElementById('avatarInput')?.click()}
+  className="absolute top-1/2 -right-3 -translate-y-1/2 bg-[#FFFFFFB8] rounded-full p-0.5 shadow-md border border-gray-200 transition-colors"
+>
                   <Camera className="w-4 h-4 text-[#687ad3]" />
                 </button>
+                <input
+  type="file"
+  accept="image/*"
+  id="avatarInput"
+  className="hidden"
+  onChange={(e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatar(URL.createObjectURL(file));
+  }}
+/>
+
               </div>
 
               <div>
