@@ -10,7 +10,6 @@ import GetStarted from "./pages/auth/GetStarted";
 import Otp from "./pages/auth/Otp";
 import NewPassword from "./pages/auth/Newpassword";
 import Done from "./pages/auth/Done";
-import { Navigate } from "react-router-dom";
 import FlightBooking from "@/component/booking/flightBooking/FlightBooking";
 import Map from "@/component/map/Map";
 import Home from './pages/HOME-PAGE/Home';
@@ -26,11 +25,10 @@ function App() {
         <Route path="/car-details" element={<CarDetails/>} />
         <Route path="/favorite" element={<Favorite/>} />
         <Route path="/profile/*" element={<Profile />} />       
-        <Route path="/" element={<Navigate to="/GetStarted" replace />} />
         <Route path="/GetStarted" element={<GetStarted />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/forgot-password" element={<ForgetPassword />} />
+        <Route path="/forgot-password" element={<ForgetPassword/>} />
         <Route path="/otp" element={<Otp />} />
         <Route path="/newpassword" element={<NewPassword />} />
         <Route path="/done" element={<Done />} />
