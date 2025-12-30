@@ -26,7 +26,7 @@ export default function Recommendation({
         {hotels.map((hotel) => (
           <Card
             key={hotel.id}
-            className="min-w-[280px] max-w-[280px] overflow-hidden cursor-pointer hover:shadow-lg transition-shadow snap-start"
+            className="min-w-70 max-w-70 overflow-hidden cursor-pointer hover:shadow-lg transition-shadow snap-start"
           >
             <div className="relative">
               <img
