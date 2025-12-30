@@ -17,6 +17,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.leaflet-control-attribution {
+  display: none !important;
+}
+
 body {
   margin: 0;
   padding: 0;
