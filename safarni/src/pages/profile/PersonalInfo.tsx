@@ -1,10 +1,10 @@
-import { useNavigate } from 'react-router-dom';
 import type { PersonalInfoFormValues } from './types';
 import FormField from '@/component/cards/FormField';
-import { User, Mail, MapPin, Phone ,ChevronLeft} from 'lucide-react';
+import { User, Mail, MapPin, Phone } from 'lucide-react';
+import { BackButton } from '@/components/ui/BackButton';
+
 
 const PersonalInfo: React.FC = () => {
-  const navigate = useNavigate();
 
   const data: PersonalInfoFormValues = {
     name: 'kneeDue',
@@ -17,14 +17,10 @@ const PersonalInfo: React.FC = () => {
     <div className="min-h-screen  p-6">
       <div className="mx-auto max-w-5xl">
 
-        <button
-          onClick={() => navigate('/profile')}
-          className="mb-4 text-sm text-gray-600  border-transparent bg-gray-100 rounded-full p-2 cursor-pointer "
-        >
-          <ChevronLeft className="inline-block w-6 h-7 mr-1" />
-        </button>
+        {/* Back Button */}
+        <BackButton to="/profile" />
 
-        <div className="rounded-2xl p-px bg-linear-to-b from-[#687ad3] to-[#da437a]">
+        <div className="rounded-2xl p-px bg-linear-to-b from-brand-purple to-brand-pink">
           <div className="rounded-2xl bg-white p-9">
             <h2 className="font-poppins text-[26px] text-center "
   

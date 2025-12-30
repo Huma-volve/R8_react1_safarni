@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import { User, Calendar, Globe, Lock, LogOut, ChevronRight, Camera } from 'lucide-react';
-import { useState } from 'react';
-import type { User as UserType, MenuItem } from './types';
-
+import { useEffect, useRef, useState } from 'react';
+import type { User as UserType } from './types';
+import avatarImg from '@/assets/Avatar.png';
+import { useMemo } from 'react';
 const ProfileMain: React.FC = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [avatar, setAvatar] = useState('/src/assets/Avatar.png');
+ const [avatar, setAvatar] = useState<string>(avatarImg);
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   
 
   const user: UserType = {
@@ -15,11 +17,11 @@ const ProfileMain: React.FC = () => {
     avatar: '/src/assets/Avatar.png' 
   };
 
-  const menuItems: MenuItem[] = [
-    { id: '1', title: 'Personal Info', icon: 'user', path: 'personal-info' },
-    { id: '2', title: 'My Booking', icon: 'calendar', path: 'my-booking' },
-    { id: '4', title: 'Account & Security', icon: 'lock', path: 'account-security' }
-  ];
+const menuItems = useMemo(() => [
+  { id: '1', title: 'Personal Info', icon: 'user', path: 'personal-info' },
+  { id: '2', title: 'My Booking', icon: 'calendar', path: 'my-booking' },
+  { id: '4', title: 'Account & Security', icon: 'lock', path: 'account-security' }
+], []);
 
   const handleLogoutClick = (): void => {
     setShowLogoutModal(true);
@@ -34,24 +36,49 @@ const ProfileMain: React.FC = () => {
     setShowLogoutModal(false);
   };
 
-  const getIcon = (iconName: MenuItem['icon']) => {
-    const icons: { [key: string]: React.ReactNode } = {
-      user: <User className="w-5 h-5" />,
-      calendar: <Calendar className="w-5 h-5" />,
-      globe: <Globe className="w-5 h-5" />,
-      lock: <Lock className="w-5 h-5" />
-    };
-    return icons[iconName];
+const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  user: User,
+  calendar: Calendar,
+  globe: Globe,
+  lock: Lock,
+  
+};
+
+const getIcon = (iconName: string) => {
+  const Icon = ICONS[iconName];
+  return Icon ? <Icon className="w-5 h-5" /> : null;
+};
+
+
+
+const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (avatar.startsWith('blob:')) {
+      URL.revokeObjectURL(avatar);
+    }
+
+    setAvatar(URL.createObjectURL(file));
   };
+
+  useEffect(() => {
+    return () => {
+      if (avatar.startsWith('blob:')) {
+        URL.revokeObjectURL(avatar);
+      }
+    };
+  }, [avatar]);
+
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 ">
       <div className="max-w-4xl mx-auto space-y-4">
         {/* Header البروفايل */}
-        <div className="rounded-2xl p-px bg-linear-to-b from-[#687ad3] to-[#da437a]">
+        <div className="rounded-2xl p-px bg-linear-to-b from-brand-purple to-brand-pink">
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <div className="flex items-center gap-4">
-              <div className="relative rounded-full p-px bg-linear-to-b from-[#687ad3] to-[#da437a]">
+              <div className="relative rounded-full p-px bg-linear-to-b from-brand-purple to-brand-pink">
                 <img 
                  src={avatar}
                   alt={user.name}
@@ -59,22 +86,18 @@ const ProfileMain: React.FC = () => {
                 />
                 <button
   type="button"
-  onClick={() => document.getElementById('avatarInput')?.click()}
+                  onClick={() => fileInputRef.current?.click()}
   className="absolute top-1/2 -right-3 -translate-y-1/2 bg-[#FFFFFFB8] rounded-full p-0.5 shadow-md border border-gray-200 transition-colors"
 >
-                  <Camera className="w-4 h-4 text-[#687ad3]" />
+                  <Camera className="w-4 h-4 text-brand-purple" />
                 </button>
                 <input
-  type="file"
-  accept="image/*"
-  id="avatarInput"
-  className="hidden"
-  onChange={(e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setAvatar(URL.createObjectURL(file));
-  }}
-/>
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
 
               </div>
 
@@ -87,7 +110,7 @@ const ProfileMain: React.FC = () => {
         </div>
 
         {/* القائمة */}
-        <div className="rounded-2xl p-px bg-linear-to-b from-[#687ad3] to-[#da437a]">
+        <div className="rounded-2xl p-px bg-linear-to-b from-brand-purple to-brand-pink">
           <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4 ">
             {menuItems.map((item) => (
               <Link 

@@ -1,66 +1,15 @@
-import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Plane, Car, TramFront , Bed , Star, MapPin } from 'lucide-react';
 import { useState } from 'react';
-import type { BookingTab, FlightBooking, CarBooking, TourBooking, HotelBooking } from './types';
+import type { BookingTab } from './types';
+import { flightBookings, carBookings, tourBookings, hotelBookings } from './Bookings';
+import { BackButton } from '@/components/ui/BackButton';
+
+
 
 const MyBooking: React.FC = () => {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<BookingTab>('flight');
 
-  
-  const flightBookings: FlightBooking[] = [
-    {
-      id: '1',
-      airline: 'Air Canada',
-      flightNumber: 'AC006',
-      from: 'YUL',
-      to: 'NRT',
-      date: 'December 16h, 2022',
-      departureTime: '07h05',
-      arrivalTime: '20h05',
-      gate: '8',
-      seat: '6',
-      terminal: '3',
-      flightCode: '13h00',
-      image: '/src/assets/image 13.png'
-
-    }
-  ];
-
-  const carBookings: CarBooking[] = [
-    {
-      id: '1',
-      carModel: 'S 500 Sedan',
-      type: 'Automatic',
-      seats: 5,
-      fuelType: 'Diesel',
-      image: '/src/assets/iris 1.png'
-    }
-  ];
-
-  const tourBookings: TourBooking[] = [
-    {
-      id: '1',
-      title: 'Luxor',
-      type: 'Full Day Tour',
-      location: 'Egypt',
-      price: 150,
-      rating: 4.3,
-      image: '/src/assets/tour.png'
-    }
-  ];
-
-  const hotelBookings: HotelBooking[] = [
-    {
-      id: '1',
-      name: 'Golden Valley',
-      location: 'New York, USA',
-      discount: '15% off',
-      rating: 4.3,
-      image: '/src/assets/hotel.png'
-    }
-  ];
-
+ 
   const tabs = [
     { id: 'flight' as BookingTab, label: 'Flight', icon: Plane },
     { id: 'cars' as BookingTab, label: 'Cars', icon: Car },
@@ -72,12 +21,7 @@ const MyBooking: React.FC = () => {
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-5xl mx-auto">
         {/* Header with Back Button */}
-       <button
-          onClick={() => navigate('/profile')}
-          className="mb-1 text-sm text-gray-600  border-transparent bg-gray-100 rounded-full p-2 cursor-pointer "
-        >
-          <ChevronLeft className="inline-block w-6 h-7 mr-1" />
-        </button>
+        <BackButton to="/profile" />
 
         {/* Title */}
         <h1 className="text-2xl font-poppins  text-center mb-8">My Booking</h1>
@@ -140,7 +84,7 @@ const MyBooking: React.FC = () => {
 
 
         {/* Content */}
-        <div className="rounded-2xl p-px bg-linear-to-b from-[#687ad3] to-[#da437a] ">
+        <div className="rounded-2xl p-px bg-linear-to-b from-brand-purple to-brand-pink">
         <div className="rounded-2xl bg-white ">
           {/* Flight Tab */}
           {activeTab === 'flight' && (

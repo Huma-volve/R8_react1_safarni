@@ -1,9 +1,9 @@
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import { BackButton } from '@/components/ui/BackButton';
+
 
 const AccountSecurity: React.FC = () => {
-  const navigate = useNavigate();
  const [biometricEnabled, setBiometricEnabled] = useState(false);
 const [faceIdEnabled, setFaceIdEnabled] = useState(false);
 
@@ -12,14 +12,9 @@ const [faceIdEnabled, setFaceIdEnabled] = useState(false);
     <div className="min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
-        <button 
-          onClick={() => navigate('/profile')}
-          className="flex items-center gap-2 mb-4 text-gray-600  border-transparent bg-gray-100 rounded-full p-2 cursor-pointer"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
+        <BackButton to="/profile" />
 
-        <div className="rounded-2xl p-px bg-linear-to-b from-[#687ad3] to-[#da437a] max-w-6xl   ">
+        <div className="rounded-2xl p-px bg-linear-to-b from-brand-purple to-brand-pink max-w-6xl   ">
         
           <div className="rounded-2xl bg-white p-6 space-y-4">
             <h1 className="text-2xl  text-center font-poppins mb-6">
