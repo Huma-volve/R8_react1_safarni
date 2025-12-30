@@ -1,14 +1,30 @@
-import { Routes, Route } from 'react-router-dom';
-import Profile from './pages/profile';
-// import Favorite from "@/pages/Favorite/Favorite"
-import CarsBooking from "@/pages/CarBooking/CarsBooking"
+
+import Home from './pages/HOME-PAGE/Home';
+import CityDetails from './pages/SEARCH-PAGE/CityDetails';
+
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import FilterPanel from "./pages/SEARCH-PAGE/FilterPanel";
+import SearchPage from './pages/SEARCH-PAGE/SearchPage';
 
 function App() {
-  return (
-    <Routes>
-      <Route path="/profile/*" element={<Profile />} />
-    </Routes>
-  )
+
+
+
+   const  myRouter = createBrowserRouter([
+      {path : "/" , element : <Home/>},
+      {path : "/Search" , element : <SearchPage/>},
+      {path : "/cite/:id" , element : <CityDetails/>},
+      {path : "/FilterPanel" , element : <FilterPanel/>},
+      
+    ])
+
+  
+  return <>
+  
+  <RouterProvider router={myRouter}/>
+  
+  </>
+  
 }
 
 export default App;
