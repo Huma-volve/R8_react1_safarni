@@ -1,6 +1,6 @@
 import { ChevronLeftIcon, Search } from "lucide-react";
 import { useState } from "react";
-import { TourCard } from "@/component/cards/favorite";
+import  TourCard from "@/component/cards/FavoriteCard";
 
 const InternalTourPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
