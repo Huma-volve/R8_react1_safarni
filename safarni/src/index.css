@@ -4,6 +4,8 @@
   --font-poppins: "Poppins", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
   --font-roboto: "Roboto", sans-serif;
+   --color-brand-purple: #687ad3;
+  --color-brand-pink: #da437a;
 }
 :root {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
