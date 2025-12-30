@@ -3,13 +3,17 @@ import CarDetails from "@/pages/CarBooking/CarDetails"
 import {  Route, Routes } from "react-router-dom";
 import Profile from './pages/profile';
 import CarsBooking from "@/pages/CarBooking/CarsBooking"
-// import ForgetPassword from "./pages/auth/ForgetPassword";
-// import SignUp from "./pages/auth/SignUp";
-// import Login from "./pages/auth/Login";
-// import GetStarted from "./pages/auth/GetStarted";
-// import Otp from "./pages/auth/Otp";
-// import NewPassword from "./pages/auth/Newpassword";
-// import Done from "./pages/auth/Done";
+import ForgetPassword from "./pages/auth/ForgetPassword";
+import SignUp from "./pages/auth/SignUp";
+import Login from "./pages/auth/Login";
+import GetStarted from "./pages/auth/GetStarted";
+import Otp from "./pages/auth/Otp";
+import NewPassword from "./pages/auth/Newpassword";
+import Done from "./pages/auth/Done";
+import { Navigate } from "react-router-dom";
+import FlightBooking from "@/component/booking/flightBooking/FlightBooking";
+import Map from "@/component/map/Map";
+
 
 function App() {
   return (
@@ -19,7 +23,7 @@ function App() {
         <Route path="/car-details" element={<CarDetails/>} />
         <Route path="/favorite" element={<Favorite/>} />
         <Route path="/profile/*" element={<Profile />} />       
-        {/* <Route path="/" element={<Navigate to="/GetStarted" replace />} />
+        <Route path="/" element={<Navigate to="/GetStarted" replace />} />
         <Route path="/GetStarted" element={<GetStarted />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
@@ -27,8 +31,8 @@ function App() {
         <Route path="/otp" element={<Otp />} />
         <Route path="/newpassword" element={<NewPassword />} />
         <Route path="/done" element={<Done />} />
-        <Route path="/done" element={<FlightBooking />} />
-        <Route path="/done" element={<Map />} /> */}
+        {/* <Route path="/flightBooking" element={<FlightBooking />} /> */}
+        <Route path="/map" element={<Map />} />
       </Routes>
     </>
   )
