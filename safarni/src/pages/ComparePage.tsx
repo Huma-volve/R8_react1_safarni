@@ -10,9 +10,9 @@ const ComparePage = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Search Section */}
       <div className="max-w-7xl mx-auto mb-8 flex items-center gap-3">
-        <span className=" bg-gray-200 w-12 h-12 cursor-pointer rounded-full flex justify-center items-center">
+        <button className="bg-gray-200 w-12 h-12 cursor-pointer rounded-full flex justify-center items-center hover:bg-gray-300 transition-colors">
           <ChevronLeftIcon />
-        </span>
+        </button>
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
@@ -29,9 +29,6 @@ const ComparePage = () => {
       <div className="max-w-7xl mx-auto  gap-8">
         {/* Left Side - Two Small Cards */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Select Tours
-          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {tours.map((tour) => (
               <div
