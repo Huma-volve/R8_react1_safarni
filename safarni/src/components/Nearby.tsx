@@ -25,7 +25,7 @@ export default function Nearby({ hotels, onViewAll }: NearbyProps) {
             key={hotel.id}
             className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow flex"
           >
-            <div className="relative w-32 h-32 flex-shrink-0">
+            <div className="relative w-32 h-32 shrink-0">
               <img
                 src={hotel.image}
                 alt={hotel.name}
