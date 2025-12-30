@@ -13,7 +13,10 @@ import Done from "./pages/auth/Done";
 import { Navigate } from "react-router-dom";
 import FlightBooking from "@/component/booking/flightBooking/FlightBooking";
 import Map from "@/component/map/Map";
-
+import Home from './pages/HOME-PAGE/Home';
+import CityDetails from './pages/SEARCH-PAGE/CityDetails';
+import FilterPanel from "./pages/SEARCH-PAGE/FilterPanel";
+import SearchPage from './pages/SEARCH-PAGE/SearchPage';
 
 function App() {
   return (
@@ -33,6 +36,10 @@ function App() {
         <Route path="/done" element={<Done />} />
         {/* <Route path="/flightBooking" element={<FlightBooking />} /> */}
         <Route path="/map" element={<Map />} />
+        <Route path="/cite/:id" element={<CityDetails />} />
+        <Route path="/Search" element={<SearchPage />} />
+        <Route path="/FilterPanel" element={<FilterPanel />} />
+        <Route path="/" element={<FilterPanel />} />
       </Routes>
     </>
   )
