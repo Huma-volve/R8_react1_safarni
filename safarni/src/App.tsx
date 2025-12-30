@@ -1,15 +1,14 @@
-import Map from "./component/map/Map";
-import { FlightBookingFlow } from "./pages/FlightBookingFlow";
+import { Routes, Route } from 'react-router-dom';
+import Profile from './pages/profile';
+// import Favorite from "@/pages/Favorite/Favorite"
+import CarsBooking from "@/pages/CarBooking/CarsBooking"
 
 function App() {
   return (
-    <>
-      <div className="container">
-        {/* <FlightBookingFlow /> */}
-        <Map />
-      </div>
-    </>
-  );
+    <Routes>
+      <Route path="/profile/*" element={<Profile />} />
+    </Routes>
+  )
 }
 
-export default App;
+export default App
