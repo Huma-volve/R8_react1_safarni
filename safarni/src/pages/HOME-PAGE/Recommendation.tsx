@@ -6,8 +6,7 @@ import img from "/images/Frame 1464203887.png"
 import img1 from "/images/Frame 1464203887 (1).png"
 import img2 from "/images/Frame 1464203887 (2).png"
 import img3 from "/images/Frame 1464203887 (3).png"
-import GradeIcon from '@mui/icons-material/Grade';
-import FmdGoodIcon from '@mui/icons-material/FmdGood';
+import { Star } from 'lucide-react';
 
 
 export default function Recommendation() {
@@ -53,12 +52,11 @@ export default function Recommendation() {
           <figcaption className=' p-2 flex flex-col'>
             <div className='flex justify-between'>
                 <h2>{item.name}</h2>
-                <span className=' flex items-center'> <GradeIcon sx={{
-                  color : "#FACC15"
-                }}/>{item.reting}</span>
+                <span className=' flex items-center'> 
+                  <Star className="text-[#FACC15]"/> {item.reting}</span>
             </div>
             
-              <p className=' flex justify-star text-gray-400'><FmdGoodIcon/>{item.adress}</p>
+              <p className=' flex justify-star text-gray-400'>{item.adress}</p>
           </figcaption>
         </div> 
           
