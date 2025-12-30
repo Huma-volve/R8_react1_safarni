@@ -1,15 +1,16 @@
 import { useState } from "react";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import SearchIcon from "@mui/icons-material/Search";
-
 import ifelImg from "/images/Vector (3).png";
 import RomaImg from "/images/Vector (1).png";
 import Londen from "/images/Vector (2).png";
+import { ChevronLeft, Search } from "lucide-react";
+import {Link} from "react-router-dom"
 
 export default function SearchPage() {
 
+  
   const [search, setSearch] = useState("");
-
+  
+  
 
   const [cities] = useState([
     { id: 1, img: ifelImg, name: "Paris", desc: "City of arts" },
@@ -32,6 +33,9 @@ export default function SearchPage() {
   const filteredCities  = cities.filter((cite)=>{
     return cite.name.toLowerCase().includes(search.toLowerCase())
   })
+
+
+  
   
 
 
@@ -42,13 +46,13 @@ export default function SearchPage() {
       {/* Search Section */}
       <div className="flex items-center justify-center gap-4 mb-8 w-full">
         {/* Back Icon */}
-        <button className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 cursor-pointer  border border-gray-300">
-          <ArrowBackIosNewIcon fontSize="small" />
+        <button  className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 cursor-pointer  border border-gray-300">
+          <ChevronLeft />
         </button>
 
         {/* Search Input */}
         <div className="relative w-[80%]">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             value={search}
             onChange={(e)=> setSearch(e.target.value)}
@@ -61,7 +65,10 @@ export default function SearchPage() {
 
       {/* Content */}
       <div className="grid grid-cols-1">
-        {filteredCities.map((city) => (
+        {filteredCities.map((city) => {
+        
+          return <Link to={`/cite/${city.id}`}>
+          
           <div
             key={city.id}
             className="p-1.5 flex gap-3 cursor-pointer hover:outline hover:outline-blue-500 rounded-[10px]"
@@ -75,7 +82,10 @@ export default function SearchPage() {
               <h4>{city.desc}</h4>
             </figcaption>
           </div>
-        ))}
+          
+          </Link>
+        
+       })}
       </div>
     </div>
   
