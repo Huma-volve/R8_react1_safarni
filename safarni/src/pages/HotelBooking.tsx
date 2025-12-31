@@ -1,21 +1,18 @@
 import { useState, useMemo, useRef } from "react";
 import { ArrowLeft, Search } from "lucide-react";
-import Recommendation from "@/components/Recommendation";
-import Nearby from "@/components/Nearby";
-import Available from "@/components/Available";
+import Recommendation from "@/component/booking/HotleBooking/Recommendation";
+import Nearby from "@/component/booking/HotleBooking/Nearby";
 import {
   recommendationHotels,
   nearbyHotels,
-  availableRooms,
 } from "@/constants/demoData";
 
 export default function HotelBooking() {
   const [searchQuery, setSearchQuery] = useState("");
   const recommendationRef = useRef<HTMLDivElement>(null);
   const nearbyRef = useRef<HTMLDivElement>(null);
-  const availableRef = useRef<HTMLDivElement>(null);
 
-  // Filter hotels and rooms based on search query
+  // Filter hotels based on search query
   const filteredRecommendations = useMemo(() => {
     if (!searchQuery.trim()) return recommendationHotels;
     return recommendationHotels.filter((hotel) =>
@@ -27,13 +24,6 @@ export default function HotelBooking() {
     if (!searchQuery.trim()) return nearbyHotels;
     return nearbyHotels.filter((hotel) =>
       hotel.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery]);
-
-  const filteredRooms = useMemo(() => {
-    if (!searchQuery.trim()) return availableRooms;
-    return availableRooms.filter((room) =>
-      room.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery]);
 
@@ -72,12 +62,6 @@ export default function HotelBooking() {
           <Nearby
             hotels={filteredNearby}
             onViewAll={() => scrollToSection(nearbyRef)}
-          />
-        </div>
-        <div ref={availableRef}>
-          <Available
-            rooms={filteredRooms}
-            onViewAll={() => scrollToSection(availableRef)}
           />
         </div>
       </div>
