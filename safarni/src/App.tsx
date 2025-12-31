@@ -16,10 +16,15 @@ import Home from './pages/HOME-PAGE/Home';
 import CityDetails from './pages/SEARCH-PAGE/CityDetails';
 import FilterPanel from "./pages/SEARCH-PAGE/FilterPanel";
 import SearchPage from './pages/SEARCH-PAGE/SearchPage';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
+
+  const myQuery = new QueryClient()
+  
   return (
     <>
+    <QueryClientProvider client={myQuery}>
       <Routes>
         {/* Auth & Profile Routes */}
         <Route path="/profile/*" element={<Profile />} />
@@ -42,6 +47,7 @@ function App() {
         <Route path="/FilterPanel" element={<FilterPanel />} />
         <Route path="/" element={<Home />} />
       </Routes>
+    </QueryClientProvider>
     </>
   );
 }
