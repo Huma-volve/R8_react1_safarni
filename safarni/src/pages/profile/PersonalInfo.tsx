@@ -1,5 +1,5 @@
 import type { PersonalInfoFormValues } from './types';
-import FormField from '@/component/cards/FormField';
+import FormField from '../../component/FormField';
 import { User, Mail, MapPin, Phone } from 'lucide-react';
 import { BackButton } from '@/components/ui/BackButton';
 

@@ -1,4 +1,4 @@
-import type { PersonalInfoFormValues } from '../../pages/profile/types';
+import type { PersonalInfoFormValues } from '../pages/profile/types';
 
 interface Props {
   label: string;
