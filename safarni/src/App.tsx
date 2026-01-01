@@ -18,6 +18,7 @@ import CityDetails from './pages/SEARCH-PAGE/CityDetails';
 import FilterPanel from "./pages/SEARCH-PAGE/FilterPanel";
 import SearchPage from './pages/SEARCH-PAGE/SearchPage';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import NavBar from "@/component/Navbar";
 
 function App() {
 
@@ -25,28 +26,29 @@ function App() {
   
   return (
     <>
-    <QueryClientProvider client={myQuery}>
-      <Routes>
-        {/* Auth & Profile Routes */}
-        <Route path="/profile/*" element={<Profile />} />
-        <Route path="/GetStarted" element={<GetStarted />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/forgot-password" element={<ForgetPassword />} />
-        <Route path="/otp" element={<Otp />} />
-        <Route path="/newpassword" element={<NewPassword />} />
-        <Route path="/done" element={<Done />} />
-        <Route path="/cars-location" element={<CarsMap/>} />
-        <Route path="/cars" element={<CarsBooking />} />
-        <Route path="/car-details" element={<CarDetails />} />
-        <Route path="/favorite" element={<Favorite />} />
-        <Route path="/map" element={<Map />} />
-        <Route path="/cite/:id" element={<CityDetails />} />
-        <Route path="/Search" element={<SearchPage />} />
-        <Route path="/FilterPanel" element={<FilterPanel />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </QueryClientProvider>
+    <NavBar/>
+      <QueryClientProvider client={myQuery}>
+        <Routes>
+          {/* Auth & Profile Routes */}
+          <Route path="/profile/*" element={<Profile />} />
+          <Route path="/GetStarted" element={<GetStarted />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgetPassword />} />
+          <Route path="/otp" element={<Otp />} />
+          <Route path="/newpassword" element={<NewPassword />} />
+          <Route path="/done" element={<Done />} />
+          <Route path="/cars-location" element={<CarsMap/>} />
+          <Route path="/cars" element={<CarsBooking />} />
+          <Route path="/car-details" element={<CarDetails />} />
+          <Route path="/favorite" element={<Favorite />} />
+          <Route path="/map" element={<Map />} />
+          <Route path="/cite/:id" element={<CityDetails />} />
+          <Route path="/Search" element={<SearchPage />} />
+          <Route path="/FilterPanel" element={<FilterPanel />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </QueryClientProvider>
     </>
   );
 }
