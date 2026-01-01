@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import forgetPasswordImage from "@/assets/forgetpassword.png";
 import { useForm } from "react-hook-form";
@@ -16,6 +16,7 @@ const schema = yup.object().shape({
 });
 
 export default function ForgetPassword() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -23,6 +24,7 @@ export default function ForgetPassword() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -40,16 +42,25 @@ export default function ForgetPassword() {
       await forgotPassword(payload);
       setSuccessMessage("OTP code sent to your email. Redirecting...");
 
-      // Redirect to OTP page after 2 seconds
+      // Redirect to OTP page after 3 seconds
       setTimeout(() => {
-        window.location.href = `/otp?email=${encodeURIComponent(data.email)}`;
-      }, 2000);
+        navigate(`/otp?email=${encodeURIComponent(data.email)}&type=reset`);
+      }, 3000);
     } catch (err: any) {
       console.error("Forgot password error:", err);
       setError(
-        err.response?.data?.message ||
-          "Failed to send reset code. Please try again."
+        err.response?.data?.message || "Something went wrong. Please try again."
       );
+
+      // If already verified, they might just need to proceed to reset password
+      if (err.response?.data?.message?.includes("verified")) {
+        setSuccessMessage(
+          "Email is already verified. Redirecting to set new password..."
+        );
+        setTimeout(() => {
+          navigate(`/newpassword?email=${encodeURIComponent(data.email)}`);
+        }, 3000);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -171,17 +182,36 @@ export default function ForgetPassword() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 mt-6"
+                className="w-full bg-[#1b3b82] text-white py-3 rounded-lg font-semibold hover:bg-[#152e66] transition-all disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 {isLoading ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Loading...</span>
-                  </div>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 ) : (
-                  "Reset Password"
+                  <span>Submit</span>
                 )}
               </button>
+
+              <div className="text-center mt-8 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                <p className="text-gray-600 text-sm mb-2">
+                  Already have an OTP code?
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const emailValue = watch("email");
+                    if (emailValue) {
+                      navigate(
+                        `/newpassword?email=${encodeURIComponent(emailValue)}`
+                      );
+                    } else {
+                      setError("Please enter your email first");
+                    }
+                  }}
+                  className="text-[#1b3b82] text-lg font-bold hover:underline cursor-pointer transition-all hover:scale-105"
+                >
+                  Enter it here
+                </button>
+              </div>
             </form>
           </div>
         </div>

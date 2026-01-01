@@ -17,6 +17,7 @@ const schema = yup.object().shape({
   password: yup
     .string()
     .min(8, "Password must be at least 8 characters")
+    .matches(/[A-Z]/, "Password must contain at least 1 uppercase letter")
     .matches(/[!@#$%^&*(),.?":{}|<>]/, "Must contain at least one symbol")
     .required("Password is required"),
   password_confirmation: yup
@@ -33,8 +34,6 @@ export default function SignUp() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-
 
   const {
     register,
@@ -75,8 +74,8 @@ export default function SignUp() {
   const passwordValue = watch("password", "");
 
   const hasMinLength = passwordValue?.length >= 8;
+  const hasUpperCase = /[A-Z]/.test(passwordValue || "");
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(passwordValue || "");
-
 
   const handleGoogleSignUp = async () => {
     try {
@@ -271,6 +270,20 @@ export default function SignUp() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
+                    {hasUpperCase ? (
+                      <Check className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <div className="w-4 h-4 rounded-full bg-gray-300"></div>
+                    )}
+                    <span
+                      className={`text-sm ${
+                        hasUpperCase ? "text-green-600" : "text-gray-500"
+                      }`}
+                    >
+                      Must Contain At Least 1 Uppercase Letter
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
                     {hasSpecialChar ? (
                       <Check className="w-4 h-4 text-green-500" />
                     ) : (
@@ -386,7 +399,7 @@ export default function SignUp() {
               {/* Social Sign Up Buttons */}
               <div className="flex justify-center">
                 <button
-                onClick={handleGoogleSignUp}
+                  onClick={handleGoogleSignUp}
                   type="button"
                   className="flex items-center justify-center w-20 h-12 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >

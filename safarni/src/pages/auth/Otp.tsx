@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import loginImage from "@/assets/login.png";
 import { ChevronLeft, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -18,7 +18,9 @@ const schema = yup.object().shape({
 
 export default function Otp() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const email = searchParams.get("email") || "";
+  const type = searchParams.get("type");
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [timer, setTimer] = useState(30);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -87,19 +89,26 @@ export default function Otp() {
       const response = await verifyOtp(payload);
       console.log("OTP Verified successfully:", response);
 
-      // Handle backend response structure
-      const userData = response.data?.user || response.user;
-      const token = response.data?.token || response.token;
+      if (type === "reset") {
+        // If password reset flow, go to NewPassword page
+        navigate(
+          `/newpassword?email=${encodeURIComponent(
+            email
+          )}&code=${encodeURIComponent(data.otp)}`
+        );
+      } else {
+        // Handle backend response structure
+        const userData = response.data?.user || response.user;
+        const token = response.data?.token || response.token;
 
-      // Auto-login user after successful verification
-      authLogin({
-        name: userData.name,
-        email: email,
-        token: token,
-        avatar: userData.profile_image || userData.avatar,
-      });
-
-      // AuthProvider will auto-redirect to /
+        // Auto-login user after successful verification (registration flow)
+        authLogin({
+          name: userData.name,
+          email: email,
+          token: token,
+          avatar: userData.profile_image || userData.avatar,
+        });
+      }
     } catch (err: any) {
       console.error("OTP verification error:", err);
       setError(

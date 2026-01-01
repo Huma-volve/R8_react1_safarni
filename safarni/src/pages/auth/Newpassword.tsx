@@ -1,18 +1,22 @@
 import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { ChevronLeft, Lock, Check } from "lucide-react";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { ChevronLeft, Lock, Check, Eye, EyeOff } from "lucide-react";
 import forgetPasswordImage from "@/assets/forgetpassword.png";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { resetPassword } from "@/services/post";
 import type { ResetPasswordPayload } from "@/services/post";
-import { useAuth } from "@/hooks/useAuth";
 
 const schema = yup.object().shape({
+  otp: yup
+    .string()
+    .length(4, "OTP must be 4 digits")
+    .required("OTP Code is required"),
   password: yup
     .string()
     .min(8, "Password must be at least 8 characters")
+    .matches(/[A-Z]/, "Password must contain at least 1 uppercase letter")
     .matches(/[!@#$%^&*(),.?":{}|<>]/, "Must contain at least one symbol")
     .required("Password is required"),
   confirmPassword: yup
@@ -23,11 +27,13 @@ const schema = yup.object().shape({
 
 export default function NewPassword() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const email = searchParams.get("email") || "";
   const code = searchParams.get("code") || "";
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { login: authLogin } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -36,22 +42,23 @@ export default function NewPassword() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      otp: code || "",
+    },
   });
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     setError(null);
     try {
-      if (!email || !code) {
-        setError(
-          "Email or code missing. Please start the reset process again."
-        );
+      if (!email) {
+        setError("Email missing. Please start the reset process again.");
         return;
       }
 
       const payload: ResetPasswordPayload = {
         email: email,
-        code: code,
+        code: data.otp, // Use code from form
         password: data.password,
         password_confirmation: data.confirmPassword,
       };
@@ -59,19 +66,8 @@ export default function NewPassword() {
       const response = await resetPassword(payload);
       console.log("Password reset successful:", response);
 
-      // Handle backend response structure
-      const userData = response.data?.user || response.user;
-      const token = response.data?.token || response.token;
-
-      // Auto-login after successful password reset
-      authLogin({
-        name: userData.name,
-        email: email,
-        token: token,
-        avatar: userData.profile_image || userData.avatar,
-      });
-
-      // AuthProvider will auto-redirect to /
+      // Successfully reset password, now go to Done page
+      navigate("/done");
     } catch (err: any) {
       console.error("Password reset error:", err);
       setError(
@@ -85,6 +81,7 @@ export default function NewPassword() {
 
   const passwordValue = watch("password", "");
   const hasMinLength = passwordValue?.length >= 8;
+  const hasUpperCase = /[A-Z]/.test(passwordValue || "");
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(passwordValue || "");
 
   return (
@@ -143,6 +140,29 @@ export default function NewPassword() {
 
             {/* Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* OTP Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  OTP Code
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    {...register("otp")}
+                    placeholder="Enter 4-digit code"
+                    maxLength={4}
+                    className={`w-full px-4 py-3 border ${
+                      errors.otp ? "border-red-500" : "border-gray-300"
+                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                  />
+                </div>
+                {errors.otp && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.otp.message?.toString()}
+                  </p>
+                )}
+              </div>
+
               {/* Password Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -150,14 +170,21 @@ export default function NewPassword() {
                 </label>
                 <div className="relative">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     {...register("password")}
                     placeholder="************"
-                    className={`w-full px-4 py-3 pl-10 border ${
+                    className={`w-full px-4 py-3 pl-10 pr-10 border ${
                       errors.password ? "border-red-500" : "border-gray-300"
                     } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                   />
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 outline-none"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
                 </div>
               </div>
 
@@ -168,16 +195,27 @@ export default function NewPassword() {
                 </label>
                 <div className="relative">
                   <input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     {...register("confirmPassword")}
                     placeholder="************"
-                    className={`w-full px-4 py-3 pl-10 border ${
+                    className={`w-full px-4 py-3 pl-10 pr-10 border ${
                       errors.confirmPassword
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                   />
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 outline-none"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
+                  </button>
                 </div>
                 {errors.confirmPassword && (
                   <p className="text-red-500 text-sm mt-1">
@@ -200,6 +238,20 @@ export default function NewPassword() {
                     }`}
                   >
                     Must Be At Least 8 Characters
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {hasUpperCase ? (
+                    <Check className="w-4 h-4 text-white bg-green-500 rounded-full p-0.5" />
+                  ) : (
+                    <Check className="w-4 h-4 text-white bg-gray-300 rounded-full p-0.5" />
+                  )}
+                  <span
+                    className={`text-sm ${
+                      hasUpperCase ? "text-gray-700" : "text-gray-500"
+                    }`}
+                  >
+                    Must Contain At Least 1 Uppercase Letter
                   </span>
                 </div>
                 <div className="flex items-center gap-2">

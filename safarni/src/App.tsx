@@ -46,24 +46,136 @@ function App() {
 
       <Routes>
         {/* Public Auth Routes */}
-        <Route path="/GetStarted" element={<PublicRoute><GetStarted /></PublicRoute>} />
-        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-        <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
-        <Route path="/forgot-password" element={<PublicRoute><ForgetPassword /></PublicRoute>} />
-        <Route path="/otp" element={<PublicRoute><Otp /></PublicRoute>} />
-        <Route path="/newpassword" element={<PublicRoute><NewPassword /></PublicRoute>} />
-        <Route path="/done" element={<PublicRoute><Done /></PublicRoute>} />
+        <Route
+          path="/GetStarted"
+          element={
+            <PublicRoute>
+              <GetStarted />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <SignUp />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <PublicRoute>
+              <ForgetPassword />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/otp"
+          element={
+            <PublicRoute>
+              <Otp />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/newpassword"
+          element={
+            <PublicRoute>
+              <NewPassword />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/done"
+          element={
+            <PublicRoute>
+              <Done />
+            </PublicRoute>
+          }
+        />
 
         {/* Protected Routes */}
-        <Route path="/profile/*" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/cars" element={<ProtectedRoute><CarsBooking /></ProtectedRoute>} />
-        <Route path="/car-details" element={<ProtectedRoute><CarDetails /></ProtectedRoute>} />
-        <Route path="/favorite" element={<ProtectedRoute><Favorite /></ProtectedRoute>} />
-        <Route path="/map" element={<ProtectedRoute><Map /></ProtectedRoute>} />
-        <Route path="/cite/:id" element={<ProtectedRoute><CityDetails /></ProtectedRoute>} />
-        <Route path="/Search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
-        <Route path="/FilterPanel" element={<ProtectedRoute><FilterPanel /></ProtectedRoute>} />
-        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route
+          path="/profile/*"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cars"
+          element={
+            <ProtectedRoute>
+              <CarsBooking />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/car-details"
+          element={
+            <ProtectedRoute>
+              <CarDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/favorite"
+          element={
+            <ProtectedRoute>
+              <Favorite />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/map"
+          element={
+            <ProtectedRoute>
+              <Map />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cite/:id"
+          element={
+            <ProtectedRoute>
+              <CityDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Search"
+          element={
+            <ProtectedRoute>
+              <SearchPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/FilterPanel"
+          element={
+            <ProtectedRoute>
+              <FilterPanel />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </AuthProvider>
   );
