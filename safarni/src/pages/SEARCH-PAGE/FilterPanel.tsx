@@ -2,10 +2,12 @@
 import { Backpack, CarFront, ChevronLeft, Dock, Search, Star, Umbrella } from "lucide-react";
 import BudgetRange from "./BudgetRange";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function FilterPanel() {
 
   const [ isActive , setIsActive ] = useState(0)
+  const navigate = useNavigate()
 
   const handelReting = (reting : number )=>{
     setIsActive(reting)
@@ -16,7 +18,7 @@ export default function FilterPanel() {
     <div className="container m-auto p-6">
 
          {/* Back Icon */}
-        <button className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 cursor-pointer  border border-gray-300">
+        <button onClick={()=> navigate(-1)} className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 cursor-pointer  border border-gray-300">
           <ChevronLeft />
         </button>
 

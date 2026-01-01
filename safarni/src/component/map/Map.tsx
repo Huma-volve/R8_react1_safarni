@@ -25,6 +25,8 @@ const Map: React.FC = () => {
       <Filters
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
 
       {/* Main Map Background */}

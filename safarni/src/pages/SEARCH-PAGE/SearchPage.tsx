@@ -3,11 +3,12 @@ import ifelImg from "/images/Vector (3).png";
 import RomaImg from "/images/Vector (1).png";
 import Londen from "/images/Vector (2).png";
 import { ChevronLeft, Search } from "lucide-react";
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 
 export default function SearchPage() {
 
-  
+  const navigate = useNavigate()
+
   const [search, setSearch] = useState("");
   
   
@@ -46,7 +47,7 @@ export default function SearchPage() {
       {/* Search Section */}
       <div className="flex items-center justify-center gap-4 mb-8 w-full">
         {/* Back Icon */}
-        <button  className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 cursor-pointer  border border-gray-300">
+        <button onClick={()=> navigate("/")}  className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 cursor-pointer  border border-gray-300">
           <ChevronLeft />
         </button>
 
@@ -71,7 +72,7 @@ export default function SearchPage() {
           
           <div
             key={city.id}
-            className="p-1.5 flex gap-3 cursor-pointer hover:outline hover:outline-blue-500 rounded-[10px]"
+            className="p-1.5 flex gap-3 cursor-pointer hover:shadow   transition-all decoration-2 rounded-[10px]"
           >
             <div className="bg-[#ebf5ff] p-2 rounded-lg">
               <img src={city.img} alt={city.name} />
