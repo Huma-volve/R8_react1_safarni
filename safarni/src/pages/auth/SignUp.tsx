@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { register as registerUser } from "@/services/post";
 import type { RegisterPayload } from "@/services/post";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -57,15 +58,18 @@ export default function SignUp() {
       const response = await registerUser(payload);
       console.log("Registration successful:", response);
 
-      // For signup, first show OTP page (commented navigation)
-      // Then after OTP verification, user will be logged in via AuthContext
-      // For now, just navigate to OTP - modify OTP page to use AuthContext on success
-      window.location.href = `/otp?email=${encodeURIComponent(data.email)}`;
+      toast.success("Account created! Please verify your email.");
+
+      // For signup, first show OTP page
+      setTimeout(() => {
+        window.location.href = `/otp?email=${encodeURIComponent(data.email)}`;
+      }, 2000);
     } catch (err: any) {
       console.error("Registration error:", err);
-      setError(
-        err.response?.data?.message || "Registration failed. Please try again."
-      );
+      const errorMessage =
+        err.response?.data?.message || "Registration failed. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +89,9 @@ export default function SignUp() {
       window.location.href = response.url;
     } catch (err: any) {
       console.error("Google login error:", err);
-      setError("Failed to initiate Google login. Please try again.");
+      const errorMessage = "Failed to initiate Google login. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     }
   };
 

@@ -8,6 +8,7 @@ import * as yup from "yup";
 import { login as loginUser } from "@/services/post";
 import type { LoginPayload } from "@/services/post";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "react-toastify";
 
 // Validation Schema
 const schema = yup.object().shape({
@@ -54,11 +55,14 @@ export default function Login() {
         token: token,
         avatar: userData.profile_image || userData.avatar, // Handle both field names
       });
+
+      toast.success(`Welcome back, ${userData.name}!`);
     } catch (err: any) {
       console.error("Login error:", err);
-      setError(
-        err.response?.data?.message || "Login failed. Please try again."
-      );
+      const errorMessage =
+        err.response?.data?.message || "Login failed. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

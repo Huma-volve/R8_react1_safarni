@@ -11,7 +11,7 @@ const FlightBooking: React.FC<FlightBookingProps> = ({ onSearchSubmit }) => {
     <main className="min-h-screen flex items-center justify-center p-4 md:p-8 lg:p-12">
       {/* Main Container Card */}
       <div className="w-full max-w-7xl p-4 lg:p-6 overflow-hidden">
-        <div className="flex flex-col lg:flex-row gap-8 min-h-[600px]">
+        <div className="flex flex-col lg:flex-row gap-8 min-h-150">
           {/* Left Side: Illustration */}
           <section className="flex-1 lg:max-w-[50%]">
             <FlightIllustration />

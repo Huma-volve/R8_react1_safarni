@@ -17,6 +17,15 @@ const Navbar = () => {
     }
   };
 
+  const getInitials = (name: string) => {
+    if (!name) return "??";
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
   return (
     <nav className="bg-white mb-5 w-[90%] mx-auto">
       <div className="max-w-7xl mx-auto px-6 py-4">
@@ -64,22 +73,30 @@ const Navbar = () => {
 
             {/* User Avatar */}
             <button className="relative group">
-              <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden ring-2 ring-gray-200 group-hover:ring-blue-400 transition">
+              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center overflow-hidden ring-2 ring-blue-100 group-hover:ring-blue-400 transition shadow-sm">
                 {user?.avatar ? (
                   <img
                     src={user.avatar}
                     alt={user.name || "User"}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.currentTarget.src = "src/assets/Avatar.png";
+                      // Fallback to initials if image fails
+                      const target = e.currentTarget;
+                      const parent = target.parentElement;
+                      if (parent) {
+                        target.style.display = "none";
+                        const span = document.createElement("span");
+                        span.className =
+                          "text-white font-bold text-sm select-none";
+                        span.innerText = getInitials(user?.name || "");
+                        parent.appendChild(span);
+                      }
                     }}
                   />
                 ) : (
-                  <img
-                    src="src/assets/Avatar.png"
-                    alt="User"
-                    className="w-full h-full object-cover"
-                  />
+                  <span className="text-white font-bold text-sm select-none">
+                    {getInitials(user?.name || "Guest")}
+                  </span>
                 )}
               </div>
               {/* User name tooltip */}

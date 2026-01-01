@@ -28,11 +28,11 @@ const FilterButton: React.FC<{
 }> = ({ active, onClick, icon, label, compact = false }) => (
   <button
     onClick={onClick}
-    className={`flex items-center justify-center gap-2 rounded-2xl transition-all shadow-lg font-semibold whitespace-nowrap border-2 flex-shrink-0 ${
+    className={`flex items-center justify-center gap-2 rounded-2xl transition-all shadow-lg font-semibold whitespace-nowrap border-2 shrink-0 ${
       compact ? "text-xs px-3 py-2" : "text-sm px-4 py-3"
     } ${
       active
-        ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white border-blue-600 shadow-blue-200/50"
+        ? "bg-linear-to-r from-blue-600 to-blue-500 text-white border-blue-600 shadow-blue-200/50"
         : "bg-white/95 text-gray-700 border-white/80 hover:border-blue-100 hover:bg-gray-50"
     }`}
   >
@@ -59,9 +59,9 @@ const Filters: React.FC<FiltersProps> = ({
   ] as const;
 
   return (
-    <div className="fixed top-0 sm:top-4 left-0 right-0 z-[999] px-3 sm:px-4 pointer-events-none">
+    <div className="fixed top-0 sm:top-4 left-0 right-0 z-999 px-3 sm:px-4 pointer-events-none">
       {/* Main Container with width constraint */}
-      <div className="w-full max-w-screen-xl mx-auto">
+      <div className="w-full max-w-7xl mx-auto">
         {/* Mobile Top Bar */}
         <div className="sm:hidden flex items-center justify-between mb-2 pointer-events-auto bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl p-3 border border-white/80">
           <div className="flex items-center gap-3">
@@ -78,7 +78,7 @@ const Filters: React.FC<FiltersProps> = ({
               <Search size={20} className="text-gray-700" />
             </button>
           </div>
-          <div className="text-sm font-bold text-gray-800 truncate max-w-[120px]">
+          <div className="text-sm font-bold text-gray-800 truncate max-w-30">
             Cairo Map
           </div>
           <div className="w-10"></div> {/* Spacer */}
@@ -167,7 +167,7 @@ const Filters: React.FC<FiltersProps> = ({
                     }}
                     className={`flex flex-col items-center justify-center gap-2 p-3 rounded-xl transition-all ${
                       activeCategory === category.id
-                        ? "bg-gradient-to-br from-blue-600 to-blue-500 text-white"
+                        ? "bg-linear-to-br from-blue-600 to-blue-500 text-white"
                         : "bg-gray-50 hover:bg-gray-100 text-gray-700"
                     }`}
                   >
@@ -178,9 +178,7 @@ const Filters: React.FC<FiltersProps> = ({
                           : "bg-white"
                       }`}
                     >
-                      {React.cloneElement(category.icon as React.ReactElement, {
-                        size: 20,
-                      })}
+                      {React.cloneElement(category.icon as React.ReactElement)}
                     </div>
                     <span className="text-xs font-semibold">
                       {category.label}

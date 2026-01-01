@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { resetPassword } from "@/services/post";
 import type { ResetPasswordPayload } from "@/services/post";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
   otp: yup
@@ -52,7 +53,9 @@ export default function NewPassword() {
     setError(null);
     try {
       if (!email) {
-        setError("Email missing. Please start the reset process again.");
+        const emailErr = "Email missing. Please start the reset process again.";
+        setError(emailErr);
+        toast.error(emailErr);
         return;
       }
 
@@ -66,14 +69,19 @@ export default function NewPassword() {
       const response = await resetPassword(payload);
       console.log("Password reset successful:", response);
 
+      toast.success("Password reset successfully! 🔒");
+
       // Successfully reset password, now go to Done page
-      navigate("/done");
+      setTimeout(() => {
+        navigate("/done");
+      }, 2000);
     } catch (err: any) {
       console.error("Password reset error:", err);
-      setError(
+      const errorMessage =
         err.response?.data?.message ||
-          "Failed to reset password. Please try again."
-      );
+        "Failed to reset password. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

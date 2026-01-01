@@ -5,9 +5,10 @@ import { ChevronLeft, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { verifyOtp } from "@/services/post";
+import { verifyOtp, forgotPassword } from "@/services/post";
 import type { VerifyOtpPayload } from "@/services/post";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
   otp: yup
@@ -22,7 +23,7 @@ export default function Otp() {
   const email = searchParams.get("email") || "";
   const type = searchParams.get("type");
   const [otp, setOtp] = useState(["", "", "", ""]);
-  const [timer, setTimer] = useState(30);
+  const [timer, setTimer] = useState(60);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,7 +78,9 @@ export default function Otp() {
     setError(null);
     try {
       if (!email) {
-        setError("Email not found. Please try registering again.");
+        const emailErr = "Email not found. Please try registering again.";
+        setError(emailErr);
+        toast.error(emailErr);
         return;
       }
 
@@ -90,6 +93,7 @@ export default function Otp() {
       console.log("OTP Verified successfully:", response);
 
       if (type === "reset") {
+        toast.success("Code verified! Set your new password.");
         // If password reset flow, go to NewPassword page
         navigate(
           `/newpassword?email=${encodeURIComponent(
@@ -108,13 +112,30 @@ export default function Otp() {
           token: token,
           avatar: userData.profile_image || userData.avatar,
         });
+        toast.success(`Welcome to Safarni, ${userData.name}! ✨`);
       }
     } catch (err: any) {
       console.error("OTP verification error:", err);
-      setError(
+      const errorMessage =
         err.response?.data?.message ||
-          "Invalid or expired code. Please try again."
-      );
+        "Invalid or expired code. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (timer > 0 || !email) return;
+
+    try {
+      setIsLoading(true);
+      await forgotPassword({ email });
+      setTimer(60);
+      toast.success("A new code has been sent to your email!");
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to resend code.");
     } finally {
       setIsLoading(false);
     }
@@ -129,74 +150,59 @@ export default function Otp() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Header with Logo and Back Button */}
-      <div className="flex justify-between items-center px-8 py-6">
-        <Link
-          to="/GetStarted"
-          className="bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg p-3 transition-colors"
-        >
-          <ChevronLeft size={24} />
-        </Link>
-        <div></div>
-        <img src="/logo.png" alt="Safarni" className="w-20 h-20" />
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+      {/* Left Side - Image (Hidden on Mobile) */}
+      <div className="hidden md:flex md:w-1/2 bg-[#1b3b82] items-center justify-center p-12">
+        <div className="max-w-md text-center">
+          <img
+            src={loginImage}
+            alt="OTP Verification"
+            className="w-full h-auto mb-8 rounded-2xl shadow-2xl"
+          />
+          <h2 className="text-3xl font-bold text-white mb-4">Security First</h2>
+          <p className="text-blue-100 text-lg">
+            We've sent a 4-digit verification code to your email to ensure your
+            account remains secure.
+          </p>
+        </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex">
-        {/* Left Side - Login Image with Background */}
-        <div className="hidden lg:flex lg:w-1/2 items-center justify-center px-8">
-          <div className="bg-gray-100 rounded-3xl p-12 w-full max-w-xl flex items-center justify-center">
-            <img
-              src={loginImage}
-              alt="login"
-              className="w-full h-auto object-contain"
-            />
+      {/* Right Side - Form */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12 bg-white">
+        <div className="w-full max-w-md">
+          {/* Back Button */}
+          <Link
+            to="/forgot-password"
+            className="inline-flex items-center text-gray-600 hover:text-[#1b3b82] mb-8 transition-colors group"
+          >
+            <ChevronLeft className="w-5 h-5 mr-1 group-hover:-translate-x-1 transition-transform" />
+            <span>Back to forgot password</span>
+          </Link>
+
+          <div className="mb-10 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full mb-4">
+              <Mail className="w-8 h-8 text-[#1b3b82]" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Verify your email
+            </h1>
+            <p className="text-gray-500">
+              Please enter the 4-digit code sent to{" "}
+              <span className="font-semibold text-gray-900">{email}</span>
+            </p>
           </div>
-        </div>
 
-        {/* Right Side - Otp Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center px-8 py-8">
-          <div className="w-full max-w-sm">
-            {/* Mail Icon */}
-            <div className="flex justify-center mb-6">
-              <div className="w-12 h-12 border border-gray-200 rounded-lg flex items-center justify-center">
-                <Mail className="w-6 h-6 text-gray-600" />
-              </div>
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm text-center">{error}</p>
             </div>
+          )}
 
-            {/* Header Text */}
-            <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                Verify Code
-              </h1>
-              <p className="text-gray-500 text-sm">
-                Please enter the code we just sent to email
-              </p>
-              <p className="text-gray-900 font-medium text-sm mt-1">
-                {email || "your email"}
-              </p>
-            </div>
-
-            {/* Error Message */}
-            {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-600 text-sm text-center">{error}</p>
-              </div>
-            )}
-
-            {/* Timer */}
-            <div className="text-center mb-8">
-              <span className="text-gray-900 font-semibold">
-                {formatTime(timer)}
-              </span>
-            </div>
-
-            {/* OTP Form */}
-            <form onSubmit={handleSubmit(onSubmit)}>
-              {/* OTP Inputs */}
-              <div className="flex justify-center gap-4 mb-2">
-                {otp.map((digit, index) => (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="mb-8">
+              <div className="flex justify-between gap-3 mb-6">
+                {[0, 1, 2, 3].map((index) => (
                   <input
                     key={index}
                     ref={(el) => {
@@ -204,12 +210,12 @@ export default function Otp() {
                     }}
                     type="text"
                     maxLength={1}
-                    value={digit}
+                    value={otp[index]}
                     onChange={(e) => handleChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
-                    className={`w-14 h-14 border-2 ${
-                      errors.otp ? "border-red-500" : "border-blue-100"
-                    } rounded-lg text-center text-xl font-semibold text-blue-600 focus:border-blue-500 focus:outline-none transition-colors caret-blue-600`}
+                    className={`w-14 h-16 text-center text-2xl font-bold border-2 rounded-xl focus:border-[#1b3b82] focus:ring-0 transition-all bg-gray-50 focus:bg-white ${
+                      errors.otp ? "border-red-500" : "border-gray-200"
+                    }`}
                   />
                 ))}
               </div>
@@ -227,13 +233,21 @@ export default function Otp() {
               {/* Resend Link */}
               <div className="text-center mb-8">
                 <p className="text-sm text-gray-600">
-                  oTP not receive ?{" "}
-                  <button
-                    type="button"
-                    className="text-blue-600 hover:underline font-medium"
-                  >
-                    send again
-                  </button>
+                  OTP not received?{" "}
+                  {timer > 0 ? (
+                    <span className="text-gray-400 font-medium">
+                      Resend in {timer}s
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleResend}
+                      disabled={isLoading}
+                      className="text-blue-600 hover:underline font-medium disabled:opacity-50"
+                    >
+                      Send again
+                    </button>
+                  )}
                 </p>
               </div>
 
@@ -241,7 +255,7 @@ export default function Otp() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[#1b3b82] text-white py-3 rounded-lg font-semibold hover:bg-[#152e66] transition-all disabled:opacity-50"
+                className="w-full bg-[#1b3b82] text-white py-3 rounded-lg font-semibold hover:bg-[#152e66] transition-all disabled:opacity-50 shadow-lg shadow-blue-100"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -249,11 +263,11 @@ export default function Otp() {
                     <span>Verifying...</span>
                   </div>
                 ) : (
-                  "Verify"
+                  "Verify Code"
                 )}
               </button>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

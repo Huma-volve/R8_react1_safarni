@@ -1,9 +1,4 @@
 import { useState } from "react";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import GradeIcon from "@mui/icons-material/Grade";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-
 import img1 from "/images/06e8d539f2c029102f72990099d00b165b9e3988.jpg";
 import img2 from "/images/3d566ff03d5064ad903c9c1f1d7653e0a080404a.jpg";
 import img3 from "/images/5345dfa8155204c3bae9205902d2bf8d7c7bc0c5.jpg";
@@ -12,9 +7,12 @@ import img5 from "/images/710430bc6094afb847ff7f6a42e01e9613cd96ab.jpg";
 import img6 from "/images/96aa1d6b3566764687e1b0505e052b25bd1cee28.jpg";
 import img7 from "/images/ab768b7bfbedbd9c47e05dca2f558b7f4abcea6d.jpg";
 import img8 from "/images/cb3d4d3525a4581d0d736f4e19a259e4fcbb57ba.jpg";
+import { ChevronLeft, Heart, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function CityDetails() {
     const [ favorites , setFavorites ] = useState<{ [key: number]: boolean }>({})
+    const navigate = useNavigate()
 
   const [places] = useState([
     {
@@ -116,24 +114,27 @@ export default function CityDetails() {
     <div className="container m-auto p-5">
 
          {/* Back Icon */}
-        <button className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 cursor-pointer  border border-gray-300">
-          <ArrowBackIosNewIcon fontSize="small" />
+        <button onClick={()=> navigate(-1)} className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 cursor-pointer  border border-gray-300">
+          <ChevronLeft />
         </button>
 
-        <h2 className=" py-4 text-2xl font-bold">Paris</h2>
+        <div className="flex justify-between items-center p-2">
+          <h2 className=" py-4 text-2xl font-bold">Paris</h2>
+          <button onClick={()=> navigate("/FilterPanel")} className=" capitalize rounded-[10px] border-0 bg-blue-700 text-white p-2 cursor-pointer">sort by</button>
+        </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
         {places.map((place) => (
           <div
             key={place.id}
             className="card rounded-2xl shadow border border-gray-200 p-3 relative"
-            onClick={()=> toggleFavorite(place.id)}
           >
-            <div className="flex justify-center items-center h-9 w-9 absolute top-5 right-7 rounded-full bg-white text-gray-400 cursor-pointer">
+            <div onClick={()=> toggleFavorite(place.id)} className="flex justify-center items-center h-9 w-9 absolute top-5 right-7 rounded-full bg-white text-gray-400 cursor-pointer">
                 {favorites[place.id] ? (
-                <FavoriteIcon sx={{ color: "red" }} />
+                <Heart className="w-6 h-6 text-red-500" fill="currentColor" />
             ) : (
-                <FavoriteBorderIcon sx={{ color: "gray" }} />
+                 <Heart />
+
             )}
               
             </div>
@@ -149,8 +150,8 @@ export default function CityDetails() {
             <figcaption className="py-3">
               <div className="flex justify-between">
                 <h3 className="font-bold">{place.title}</h3>
-                <span>
-                  <GradeIcon sx={{ color: "#FACC15" }} /> {place.rating}
+                <span className="flex items-center gap-1">
+                  <Star className="text-[#FACC15] " fill="currentColor" size={19}/> {place.rating}
                 </span>
               </div>
 

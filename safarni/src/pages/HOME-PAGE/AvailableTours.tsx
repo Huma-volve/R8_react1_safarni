@@ -3,7 +3,7 @@ import Dahab from "/images/_Small Picture.png";
 import Fayoum from "/images/_File Placeholder (1).png";
 import MarsaAlam from "/images/_File Placeholder (2).png";
 import { useState } from "react";
-import GradeIcon from "@mui/icons-material/Grade";
+import { Star } from "lucide-react";
 
 export default function AvailableTours() {
 
@@ -18,10 +18,10 @@ export default function AvailableTours() {
     <>
       <div className="container ">
         <div className="p-3 flex justify-between items-center">
-          <h2 className="text-2xl font-bold">AvailableTours</h2>
+          <h2 className="text-2xl font-bold">Available Tours</h2>
           <h4 className="text-[20px]">viow all</h4>
         </div>
-
+ 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
           {availableTours.map((tour, index) => (
             <div
@@ -36,7 +36,7 @@ export default function AvailableTours() {
                 <div className="flex justify-between">
                   <h4 className="text-gray-400">{tour.tripDuration}</h4>
                   <span className="flex items-center">
-                    <GradeIcon sx={{ color: "#FACC15" }} />
+                    <Star className="text-[#FACC15]" fill='#FACC15' size={20}/>
                     {tour.rating}
                   </span>
                 </div>

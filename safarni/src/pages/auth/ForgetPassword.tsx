@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { forgotPassword } from "@/services/post";
 import type { ForgotPasswordPayload } from "@/services/post";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
   email: yup
@@ -40,7 +41,9 @@ export default function ForgetPassword() {
       };
 
       await forgotPassword(payload);
-      setSuccessMessage("OTP code sent to your email. Redirecting...");
+      const msg = "OTP code sent to your email. Redirecting...";
+      setSuccessMessage(msg);
+      toast.success(msg);
 
       // Redirect to OTP page after 3 seconds
       setTimeout(() => {
@@ -48,15 +51,18 @@ export default function ForgetPassword() {
       }, 3000);
     } catch (err: any) {
       console.error("Forgot password error:", err);
-      setError(
-        err.response?.data?.message || "Something went wrong. Please try again."
-      );
+      const errorMessage =
+        err.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
 
       // If already verified, they might just need to proceed to reset password
       if (err.response?.data?.message?.includes("verified")) {
-        setSuccessMessage(
-          "Email is already verified. Redirecting to set new password..."
-        );
+        const verifyMsg =
+          "Email is already verified. Redirecting to set new password...";
+        setSuccessMessage(verifyMsg);
+        toast.info(verifyMsg);
         setTimeout(() => {
           navigate(`/newpassword?email=${encodeURIComponent(data.email)}`);
         }, 3000);
