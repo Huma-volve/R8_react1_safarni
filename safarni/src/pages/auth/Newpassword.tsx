@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ChevronLeft, Lock, Check } from "lucide-react";
 import forgetPasswordImage from "@/assets/forgetpassword.png";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { resetPassword } from "@/services/post";
+import type { ResetPasswordPayload } from "@/services/post";
+import { useAuth } from "@/hooks/useAuth";
 
 const schema = yup.object().shape({
   password: yup
@@ -19,7 +22,12 @@ const schema = yup.object().shape({
 });
 
 export default function NewPassword() {
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email") || "";
+  const code = searchParams.get("code") || "";
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { login: authLogin } = useAuth();
 
   const {
     register,
@@ -30,13 +38,49 @@ export default function NewPassword() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log(data);
-    setTimeout(() => {
+    setError(null);
+    try {
+      if (!email || !code) {
+        setError(
+          "Email or code missing. Please start the reset process again."
+        );
+        return;
+      }
+
+      const payload: ResetPasswordPayload = {
+        email: email,
+        code: code,
+        password: data.password,
+        password_confirmation: data.confirmPassword,
+      };
+
+      const response = await resetPassword(payload);
+      console.log("Password reset successful:", response);
+
+      // Handle backend response structure
+      const userData = response.data?.user || response.user;
+      const token = response.data?.token || response.token;
+
+      // Auto-login after successful password reset
+      authLogin({
+        name: userData.name,
+        email: email,
+        token: token,
+        avatar: userData.profile_image || userData.avatar,
+      });
+
+      // AuthProvider will auto-redirect to /
+    } catch (err: any) {
+      console.error("Password reset error:", err);
+      setError(
+        err.response?.data?.message ||
+          "Failed to reset password. Please try again."
+      );
+    } finally {
       setIsLoading(false);
-      // alert("Password reset successfully!");
-    }, 1500);
+    }
   };
 
   const passwordValue = watch("password", "");
@@ -89,6 +133,13 @@ export default function NewPassword() {
                 Your New Password Must be Different to Previously Used Password
               </p>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm text-center">{error}</p>
+              </div>
+            )}
 
             {/* Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

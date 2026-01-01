@@ -5,7 +5,8 @@ import forgetPasswordImage from "@/assets/forgetpassword.png";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
+import { forgotPassword } from "@/services/post";
+import type { ForgotPasswordPayload } from "@/services/post";
 
 const schema = yup.object().shape({
   email: yup
@@ -16,6 +17,8 @@ const schema = yup.object().shape({
 
 export default function ForgetPassword() {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -25,13 +28,31 @@ export default function ForgetPassword() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log(data);
-    setTimeout(() => {
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      const payload: ForgotPasswordPayload = {
+        email: data.email,
+      };
+
+      await forgotPassword(payload);
+      setSuccessMessage("OTP code sent to your email. Redirecting...");
+
+      // Redirect to OTP page after 2 seconds
+      setTimeout(() => {
+        window.location.href = `/otp?email=${encodeURIComponent(data.email)}`;
+      }, 2000);
+    } catch (err: any) {
+      console.error("Forgot password error:", err);
+      setError(
+        err.response?.data?.message ||
+          "Failed to send reset code. Please try again."
+      );
+    } finally {
       setIsLoading(false);
-      // alert("Password reset link sent to your email!");
-    }, 1500);
+    }
   };
 
   return (
@@ -92,6 +113,22 @@ export default function ForgetPassword() {
                 please enter your email to reset that password
               </p>
             </div>
+
+            {/* Success Message */}
+            {successMessage && (
+              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-600 text-sm text-center">
+                  {successMessage}
+                </p>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm text-center">{error}</p>
+              </div>
+            )}
 
             {/* Forgot Password Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

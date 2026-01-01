@@ -5,6 +5,9 @@ import { ChevronLeft, Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { login as loginUser } from "@/services/post";
+import type { LoginPayload } from "@/services/post";
+import { useAuth } from "@/hooks/useAuth";
 
 // Validation Schema
 const schema = yup.object().shape({
@@ -18,6 +21,8 @@ const schema = yup.object().shape({
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { login: authLogin } = useAuth();
 
   const {
     register,
@@ -27,13 +32,48 @@ export default function Login() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log(data);
-    setTimeout(() => {
+    setError(null);
+    try {
+      const payload: LoginPayload = {
+        email: data.email,
+        password: data.password,
+      };
+      const response = await loginUser(payload);
+      console.log("Login successful:", response);
+
+      // Handle backend response structure: response.data.user and response.data.token
+      const userData = response.data?.user || response.user;
+      const token = response.data?.token || response.token;
+
+      // Use AuthContext to save user data - this will auto-redirect to /
+      authLogin({
+        name: userData.name,
+        email: userData.email || data.email,
+        token: token,
+        avatar: userData.profile_image || userData.avatar, // Handle both field names
+      });
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError(
+        err.response?.data?.message || "Login failed. Please try again."
+      );
+    } finally {
       setIsLoading(false);
-      // alert("Login logic pending backend integration");
-    }, 1500);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const { getGoogleAuthUrl } = await import("@/services/get");
+      const response = await getGoogleAuthUrl();
+      // Redirect to Google OAuth URL
+      window.location.href = response.url;
+    } catch (err: any) {
+      console.error("Google login error:", err);
+      setError("Failed to initiate Google login. Please try again.");
+    }
   };
 
   return (
@@ -75,6 +115,13 @@ export default function Login() {
                 welcome back! please fill your Data
               </p>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm text-center">{error}</p>
+              </div>
+            )}
 
             {/* Login Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -163,6 +210,7 @@ export default function Login() {
               <div className="flex justify-center">
                 <button
                   type="button"
+                  onClick={handleGoogleLogin}
                   className="flex items-center justify-center w-16 h-16 border-2 border-blue-400 rounded-lg hover:bg-blue-50 transition-colors"
                 >
                   <svg className="w-6 h-6" viewBox="0 0 24 24">

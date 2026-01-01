@@ -1,9 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Profile from "./pages/profile";
-// import Favorite from "@/pages/Favorite/Favorite"
-
-// import CarsBooking from "@/pages/CarBooking/CarsBooking"
-
 import GetStarted from "./pages/auth/GetStarted";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
@@ -12,27 +8,64 @@ import Otp from "./pages/auth/Otp";
 import NewPassword from "./pages/auth/Newpassword";
 import Done from "./pages/auth/Done";
 
+// Pages from Deployment branch
+import CarsBooking from "@/pages/CarBooking/CarsBooking";
+import CarDetails from "@/pages/CarBooking/CarDetails";
+import Favorite from "@/pages/Favorite/Favorite";
+
+// Additional components
+import Map from "@/component/map/Map";
+import Home from "./pages/HOME-PAGE/Home";
+import CityDetails from "./pages/SEARCH-PAGE/CityDetails";
+import FilterPanel from "./pages/SEARCH-PAGE/FilterPanel";
+import SearchPage from "./pages/SEARCH-PAGE/SearchPage";
+
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute, PublicRoute } from "./component/ProtectedRoute";
+import Navbar from "./component/Navbar";
+
 function App() {
+  const location = useLocation();
+
+  // Auth routes where Navbar should be hidden
+  const authRoutes = [
+    "/GetStarted",
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/otp",
+    "/newpassword",
+    "/done",
+  ];
+
+  const isAuthRoute = authRoutes.includes(location.pathname);
+
   return (
-    <Routes>
-      <Route path="/profile/*" element={<Profile />} />
+    <AuthProvider>
+      {!isAuthRoute && <Navbar />}
 
-      <Route path="/GetStarted" element={<GetStarted/>} />
+      <Routes>
+        {/* Public Auth Routes */}
+        <Route path="/GetStarted" element={<PublicRoute><GetStarted /></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgetPassword /></PublicRoute>} />
+        <Route path="/otp" element={<PublicRoute><Otp /></PublicRoute>} />
+        <Route path="/newpassword" element={<PublicRoute><NewPassword /></PublicRoute>} />
+        <Route path="/done" element={<PublicRoute><Done /></PublicRoute>} />
 
-      <Route path="/GetStarted" element={<GetStarted />} />
-
-      <Route path="/login" element={<Login />} />
-
-      <Route path="/signup" element={<SignUp />} />
-
-      <Route path="/forgot-password" element={<ForgetPassword/>} />
-
-      <Route path="/otp" element={<Otp />} />
-
-      <Route path="/newpassword" element={<NewPassword />} />
-
-      <Route path="/done" element={<Done />} />
-    </Routes>
+        {/* Protected Routes */}
+        <Route path="/profile/*" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/cars" element={<ProtectedRoute><CarsBooking /></ProtectedRoute>} />
+        <Route path="/car-details" element={<ProtectedRoute><CarDetails /></ProtectedRoute>} />
+        <Route path="/favorite" element={<ProtectedRoute><Favorite /></ProtectedRoute>} />
+        <Route path="/map" element={<ProtectedRoute><Map /></ProtectedRoute>} />
+        <Route path="/cite/:id" element={<ProtectedRoute><CityDetails /></ProtectedRoute>} />
+        <Route path="/Search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
+        <Route path="/FilterPanel" element={<ProtectedRoute><FilterPanel /></ProtectedRoute>} />
+        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+      </Routes>
+    </AuthProvider>
   );
 }
 

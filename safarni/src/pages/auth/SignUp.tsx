@@ -5,6 +5,8 @@ import signupImage from "@/assets/signin.png";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { register as registerUser } from "@/services/post";
+import type { RegisterPayload } from "@/services/post";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -17,6 +19,10 @@ const schema = yup.object().shape({
     .min(8, "Password must be at least 8 characters")
     .matches(/[!@#$%^&*(),.?":{}|<>]/, "Must contain at least one symbol")
     .required("Password is required"),
+  password_confirmation: yup
+    .string()
+    .oneOf([yup.ref("password")], "Passwords must match")
+    .required("Password confirmation is required"),
   agreeToTerms: yup
     .boolean()
     .oneOf([true], "You must agree to the terms and privacy policy"),
@@ -24,7 +30,11 @@ const schema = yup.object().shape({
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+
 
   const {
     register,
@@ -35,19 +45,50 @@ export default function SignUp() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log(data);
-    setTimeout(() => {
+    setError(null);
+    try {
+      const payload: RegisterPayload = {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        password_confirmation: data.password_confirmation,
+      };
+      const response = await registerUser(payload);
+      console.log("Registration successful:", response);
+
+      // For signup, first show OTP page (commented navigation)
+      // Then after OTP verification, user will be logged in via AuthContext
+      // For now, just navigate to OTP - modify OTP page to use AuthContext on success
+      window.location.href = `/otp?email=${encodeURIComponent(data.email)}`;
+    } catch (err: any) {
+      console.error("Registration error:", err);
+      setError(
+        err.response?.data?.message || "Registration failed. Please try again."
+      );
+    } finally {
       setIsLoading(false);
-      // alert("Sign up logic pending backend integration");
-    }, 1500);
+    }
   };
 
   const passwordValue = watch("password", "");
 
   const hasMinLength = passwordValue?.length >= 8;
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(passwordValue || "");
+
+
+  const handleGoogleSignUp = async () => {
+    try {
+      const { getGoogleAuthUrl } = await import("@/services/get");
+      const response = await getGoogleAuthUrl();
+      // Redirect to Google OAuth URL
+      window.location.href = response.url;
+    } catch (err: any) {
+      console.error("Google login error:", err);
+      setError("Failed to initiate Google login. Please try again.");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -88,6 +129,13 @@ export default function SignUp() {
                 welcome back! please Fill Your data
               </p>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm text-center">{error}</p>
+              </div>
+            )}
 
             {/* Sign Up Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -239,6 +287,54 @@ export default function SignUp() {
                 </div>
               </div>
 
+              {/* Confirm Password Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    {...register("password_confirmation")}
+                    placeholder="••••••••••"
+                    className={`w-full px-4 py-3 pl-10 pr-12 border ${
+                      errors.password_confirmation
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                  />
+                  <svg
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+                {errors.password_confirmation && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.password_confirmation.message?.toString()}
+                  </p>
+                )}
+              </div>
+
               {/* Terms Checkbox */}
               <div className="flex items-start">
                 <div className="flex items-center h-5">
@@ -290,6 +386,7 @@ export default function SignUp() {
               {/* Social Sign Up Buttons */}
               <div className="flex justify-center">
                 <button
+                onClick={handleGoogleSignUp}
                   type="button"
                   className="flex items-center justify-center w-20 h-12 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
