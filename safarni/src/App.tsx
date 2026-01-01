@@ -18,13 +18,14 @@ import CityDetails from './pages/SEARCH-PAGE/CityDetails';
 import FilterPanel from "./pages/SEARCH-PAGE/FilterPanel";
 import SearchPage from './pages/SEARCH-PAGE/SearchPage';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
+import NavBar from "@/component/Navbar";
 function App() {
 
   const myQuery = new QueryClient()
   
   return (
     <>
+    <NavBar/>
     <QueryClientProvider client={myQuery}>
       <Routes>
         {/* Auth & Profile Routes */}
@@ -36,7 +37,7 @@ function App() {
         <Route path="/otp" element={<Otp />} />
         <Route path="/newpassword" element={<NewPassword />} />
         <Route path="/done" element={<Done />} />
-        <Route path="/cars-location" element={<CarsMap/>} />
+        <Route path="/car-location" element={<CarsMap/>} />
         <Route path="/cars" element={<CarsBooking />} />
         <Route path="/car-details" element={<CarDetails />} />
         <Route path="/favorite" element={<Favorite />} />
