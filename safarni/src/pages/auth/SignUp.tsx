@@ -22,7 +22,7 @@ const schema = yup.object().shape({
     .oneOf([true], "You must agree to the terms and privacy policy"),
 });
 
-export default function SafarniSignUp() {
+export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 

@@ -118,16 +118,18 @@ export default function CityDetails() {
           <ChevronLeft />
         </button>
 
-        <h2 className=" py-4 text-2xl font-bold">Paris</h2>
+        <div className="flex justify-between items-center p-2">
+          <h2 className=" py-4 text-2xl font-bold">Paris</h2>
+          <button onClick={()=> navigate("/FilterPanel")} className=" capitalize rounded-[10px] border-0 bg-blue-700 text-white p-2 cursor-pointer">sort by</button>
+        </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
         {places.map((place) => (
           <div
             key={place.id}
             className="card rounded-2xl shadow border border-gray-200 p-3 relative"
-            onClick={()=> toggleFavorite(place.id)}
           >
-            <div className="flex justify-center items-center h-9 w-9 absolute top-5 right-7 rounded-full bg-white text-gray-400 cursor-pointer">
+            <div onClick={()=> toggleFavorite(place.id)} className="flex justify-center items-center h-9 w-9 absolute top-5 right-7 rounded-full bg-white text-gray-400 cursor-pointer">
                 {favorites[place.id] ? (
                 <Heart className="w-6 h-6 text-red-500" fill="currentColor" />
             ) : (

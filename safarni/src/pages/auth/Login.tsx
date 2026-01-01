@@ -15,7 +15,7 @@ const schema = yup.object().shape({
   password: yup.string().required("Password is required"),
 });
 
-export default function SafarniLogin() {
+export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 

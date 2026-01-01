@@ -178,9 +178,7 @@ const Filters: React.FC<FiltersProps> = ({
                           : "bg-white"
                       }`}
                     >
-                      {React.cloneElement(category.icon as React.ReactElement, {
-                        // size: 20,
-                      })}
+                      {React.cloneElement(category.icon as React.ReactElement)}
                     </div>
                     <span className="text-xs font-semibold">
                       {category.label}
