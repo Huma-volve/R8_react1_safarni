@@ -12,6 +12,7 @@ import Done from "./pages/auth/Done";
 import CarsBooking from "@/pages/CarBooking/CarsBooking";
 import CarDetails from "@/pages/CarBooking/CarDetails";
 import Favorite from "@/pages/Favorite/Favorite";
+import CarsMap from "@/pages/CarBooking/Map/CarsMap";
 
 // Additional components
 import Map from "@/component/map/Map";
@@ -25,6 +26,9 @@ import { ProtectedRoute, PublicRoute } from "./component/ProtectedRoute";
 import Navbar from "./component/Navbar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   const location = useLocation();
@@ -43,155 +47,165 @@ function App() {
   const isAuthRoute = authRoutes.includes(location.pathname);
 
   return (
-    <AuthProvider>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      {!isAuthRoute && <Navbar />}
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        {!isAuthRoute && <Navbar />}
 
-      <Routes>
-        {/* Public Auth Routes */}
-        <Route
-          path="/GetStarted"
-          element={
-            <PublicRoute>
-              <GetStarted />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <PublicRoute>
-              <SignUp />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/forgot-password"
-          element={
-            <PublicRoute>
-              <ForgetPassword />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/otp"
-          element={
-            <PublicRoute>
-              <Otp />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/newpassword"
-          element={
-            <PublicRoute>
-              <NewPassword />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/done"
-          element={
-            <PublicRoute>
-              <Done />
-            </PublicRoute>
-          }
-        />
+        <Routes>
+          {/* Public Auth Routes */}
+          <Route
+            path="/GetStarted"
+            element={
+              <PublicRoute>
+                <GetStarted />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <SignUp />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgetPassword />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/otp"
+            element={
+              <PublicRoute>
+                <Otp />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/newpassword"
+            element={
+              <PublicRoute>
+                <NewPassword />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/done"
+            element={
+              <PublicRoute>
+                <Done />
+              </PublicRoute>
+            }
+          />
 
-        {/* Protected Routes */}
-        <Route
-          path="/profile/*"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/cars"
-          element={
-            <ProtectedRoute>
-              <CarsBooking />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/car-details"
-          element={
-            <ProtectedRoute>
-              <CarDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/favorite"
-          element={
-            <ProtectedRoute>
-              <Favorite />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/map"
-          element={
-            <ProtectedRoute>
-              <Map />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/cite/:id"
-          element={
-            <ProtectedRoute>
-              <CityDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/Search"
-          element={
-            <ProtectedRoute>
-              <SearchPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/FilterPanel"
-          element={
-            <ProtectedRoute>
-              <FilterPanel />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </AuthProvider>
+          {/* Protected Routes */}
+          <Route
+            path="/profile/*"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cars"
+            element={
+              <ProtectedRoute>
+                <CarsBooking />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/car-details"
+            element={
+              <ProtectedRoute>
+                <CarDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/favorite"
+            element={
+              <ProtectedRoute>
+                <Favorite />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/map"
+            element={
+              <ProtectedRoute>
+                <Map />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cars-location"
+            element={
+              <ProtectedRoute>
+                <CarsMap />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cite/:id"
+            element={
+              <ProtectedRoute>
+                <CityDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Search"
+            element={
+              <ProtectedRoute>
+                <SearchPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/FilterPanel"
+            element={
+              <ProtectedRoute>
+                <FilterPanel />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

@@ -22,7 +22,7 @@ export default function Home() {
 
     <header className="grid grid-cols-1 md:grid-cols-2 p-3.5">
          <div className="max-md:hidden flex justify-center items-center">
-             <div className="text w-[55%] relative ">
+             <div className="text w-[60%] relative ">
                <h1 className=" text-3xl font-bold pt-5">Visit The Most</h1>
               <h2  className=" text-4xl font-bold py-5"> <span className="text-[#1e429f]">Beautiful Places</span> In The World </h2>
               <p>Explore stunning destinations around the globe. Find travel inspiration , top attractions , and plan your next adventure—all from one platform.</p>

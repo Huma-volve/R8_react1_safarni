@@ -6,7 +6,7 @@ import img from "/images/Frame 1464203887.png"
 import img1 from "/images/Frame 1464203887 (1).png"
 import img2 from "/images/Frame 1464203887 (2).png"
 import img3 from "/images/Frame 1464203887 (3).png"
-import { Star } from 'lucide-react';
+import { MapPin, Star } from 'lucide-react';
 
 
 export default function Recommendation() {
@@ -45,18 +45,18 @@ export default function Recommendation() {
         {recommendationAll.map((item , idx)=>{
           return <SwiperSlide key={idx}>
           
-          <div  className=' shadow-md shadow-black/10 max-sm:w-[80%] max-sm:m-auto  border border-gray-200 rounded-2xl p-2 py-5 text-center'>
+          <div  className=' shadow-md shadow-black/10 max-sm:w-[80%] max-sm:m-auto  border border-gray-200 rounded-2xl p-2 py-5 my-7 mx-1 text-center hover:scale-[1.03] cursor-pointer  transition-all decoration-2'>
           <figure className=' flex justify-center items-center p-2 '>
             <img className='w-full' src={item.recommendationImg} alt="" />
           </figure>
           <figcaption className=' p-2 flex flex-col'>
             <div className='flex justify-between'>
                 <h2>{item.name}</h2>
-                <span className=' flex items-center'> 
-                  <Star className="text-[#FACC15]"/> {item.reting}</span>
+                <span className=' flex items-center gap-x-0.5'> 
+                  <Star className="text-[#FACC15]" fill='#FACC15' size={20}/> {item.reting}</span>
             </div>
             
-              <p className=' flex justify-star text-gray-400'>{item.adress}</p>
+              <p className=' flex justify-star text-gray-400'><MapPin size={18} />{item.adress}</p>
           </figcaption>
         </div> 
           
