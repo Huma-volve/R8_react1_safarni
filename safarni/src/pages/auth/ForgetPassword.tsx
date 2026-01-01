@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import forgetPasswordImage from "@/assets/forgetpassword.png";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
+import { forgotPassword } from "@/services/post";
+import type { ForgotPasswordPayload } from "@/services/post";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
   email: yup
@@ -15,23 +17,59 @@ const schema = yup.object().shape({
 });
 
 export default function ForgetPassword() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log(data);
-    setTimeout(() => {
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      const payload: ForgotPasswordPayload = {
+        email: data.email,
+      };
+
+      await forgotPassword(payload);
+      const msg = "OTP code sent to your email. Redirecting...";
+      setSuccessMessage(msg);
+      toast.success(msg);
+
+      // Redirect to OTP page after 3 seconds
+      setTimeout(() => {
+        navigate(`/otp?email=${encodeURIComponent(data.email)}&type=reset`);
+      }, 3000);
+    } catch (err: any) {
+      console.error("Forgot password error:", err);
+      const errorMessage =
+        err.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
+
+      // If already verified, they might just need to proceed to reset password
+      if (err.response?.data?.message?.includes("verified")) {
+        const verifyMsg =
+          "Email is already verified. Redirecting to set new password...";
+        setSuccessMessage(verifyMsg);
+        toast.info(verifyMsg);
+        setTimeout(() => {
+          navigate(`/newpassword?email=${encodeURIComponent(data.email)}`);
+        }, 3000);
+      }
+    } finally {
       setIsLoading(false);
-      // alert("Password reset link sent to your email!");
-    }, 1500);
+    }
   };
 
   return (
@@ -93,6 +131,22 @@ export default function ForgetPassword() {
               </p>
             </div>
 
+            {/* Success Message */}
+            {successMessage && (
+              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-600 text-sm text-center">
+                  {successMessage}
+                </p>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm text-center">{error}</p>
+              </div>
+            )}
+
             {/* Forgot Password Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* Email Input */}
@@ -134,17 +188,36 @@ export default function ForgetPassword() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 mt-6"
+                className="w-full bg-[#1b3b82] text-white py-3 rounded-lg font-semibold hover:bg-[#152e66] transition-all disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 {isLoading ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Loading...</span>
-                  </div>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 ) : (
-                  "Reset Password"
+                  <span>Submit</span>
                 )}
               </button>
+
+              <div className="text-center mt-8 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                <p className="text-gray-600 text-sm mb-2">
+                  Already have an OTP code?
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const emailValue = watch("email");
+                    if (emailValue) {
+                      navigate(
+                        `/newpassword?email=${encodeURIComponent(emailValue)}`
+                      );
+                    } else {
+                      setError("Please enter your email first");
+                    }
+                  }}
+                  className="text-[#1b3b82] text-lg font-bold hover:underline cursor-pointer transition-all hover:scale-105"
+                >
+                  Enter it here
+                </button>
+              </div>
             </form>
           </div>
         </div>

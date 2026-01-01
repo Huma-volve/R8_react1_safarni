@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import loginImage from "@/assets/login.png";
 import { ChevronLeft, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { verifyOtp } from "@/services/post";
+import type { VerifyOtpPayload } from "@/services/post";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
   otp: yup
@@ -14,10 +18,16 @@ const schema = yup.object().shape({
 });
 
 export default function Otp() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const email = searchParams.get("email") || "";
+  const type = searchParams.get("type");
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [timer, setTimer] = useState(30);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { login: authLogin } = useAuth();
 
   const {
     setValue,
@@ -63,13 +73,57 @@ export default function Otp() {
     }
   };
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log("OTP Submitted:", data);
-    setTimeout(() => {
+    setError(null);
+    try {
+      if (!email) {
+        const emailErr = "Email not found. Please try registering again.";
+        setError(emailErr);
+        toast.error(emailErr);
+        return;
+      }
+
+      const payload: VerifyOtpPayload = {
+        email: email,
+        code: data.otp,
+      };
+
+      const response = await verifyOtp(payload);
+      console.log("OTP Verified successfully:", response);
+
+      if (type === "reset") {
+        toast.success("Code verified! Set your new password.");
+        // If password reset flow, go to NewPassword page
+        navigate(
+          `/newpassword?email=${encodeURIComponent(
+            email
+          )}&code=${encodeURIComponent(data.otp)}`
+        );
+      } else {
+        // Handle backend response structure
+        const userData = response.data?.user || response.user;
+        const token = response.data?.token || response.token;
+
+        // Auto-login user after successful verification (registration flow)
+        authLogin({
+          name: userData.name,
+          email: email,
+          token: token,
+          avatar: userData.profile_image || userData.avatar,
+        });
+        toast.success(`Welcome to Safarni, ${userData.name}! ✨`);
+      }
+    } catch (err: any) {
+      console.error("OTP verification error:", err);
+      const errorMessage =
+        err.response?.data?.message ||
+        "Invalid or expired code. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
       setIsLoading(false);
-      // alert("OTP Verified Successfully!");
-    }, 1500);
+    }
   };
 
   const formatTime = (time: number) => {
@@ -126,9 +180,16 @@ export default function Otp() {
                 Please enter the code we just sent to email
               </p>
               <p className="text-gray-900 font-medium text-sm mt-1">
-                kneedue@untitledui.com
+                {email || "your email"}
               </p>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm text-center">{error}</p>
+              </div>
+            )}
 
             {/* Timer */}
             <div className="text-center mb-8">
@@ -144,7 +205,9 @@ export default function Otp() {
                 {otp.map((digit, index) => (
                   <input
                     key={index}
-                    ref={(el) => {if (el) inputRefs.current[index] = el;}}
+                    ref={(el) => {
+                      if (el) inputRefs.current[index] = el;
+                    }}
                     type="text"
                     maxLength={1}
                     value={digit}
