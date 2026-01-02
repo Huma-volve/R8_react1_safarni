@@ -36,34 +36,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Load user from localStorage or URL parameters on mount
   useEffect(() => {
-    // 1. Check URL for authentication parameters (e.g., after Google OAuth redirect)
-    const params = new URLSearchParams(window.location.search);
-    const urlToken = params.get("token");
-    const urlUserString = params.get("user");
-
-    if (urlToken && urlUserString) {
-      try {
-        const urlUser = JSON.parse(urlUserString);
-        const userData = {
-          name: urlUser.name || urlUser.user?.name,
-          email: urlUser.email || urlUser.user?.email,
-          token: urlToken,
-          avatar: urlUser.avatar || urlUser.profile_image || urlUser.picture || urlUser.user?.profile_image,
-        };
-        
-        // Save to state and localStorage
-        login(userData);
-        
-        // Clean up URL parameters
-        window.history.replaceState({}, document.title, window.location.pathname);
-        setLoading(false);
-        return;
-      } catch (error) {
-        console.error("Failed to parse user data from URL:", error);
-      }
-    }
-
-    // 2. Load user from localStorage
+    // Load user from localStorage
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("authToken");
 
