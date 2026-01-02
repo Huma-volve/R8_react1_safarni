@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import loginImage from "@/assets/login.png";
-import { ChevronLeft, Mail } from "lucide-react";
+import { ChevronLeft, Mail, CheckCircle, AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -26,7 +26,10 @@ export default function Otp() {
   const [timer, setTimer] = useState(60);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<{
+    type: "error" | "success" | null;
+    text: string;
+  }>({ type: null, text: "" });
   const { login: authLogin } = useAuth();
 
   const {
@@ -54,6 +57,11 @@ export default function Otp() {
     newOtp[index] = value;
     setOtp(newOtp);
 
+    // Clear any previous messages when user types
+    if (message.type) {
+      setMessage({ type: null, text: "" });
+    }
+
     // Sync with React Hook Form
     const otpString = newOtp.join("");
     setValue("otp", otpString);
@@ -75,11 +83,12 @@ export default function Otp() {
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    setError(null);
+    setMessage({ type: null, text: "" });
+
     try {
       if (!email) {
         const emailErr = "Email not found. Please try registering again.";
-        setError(emailErr);
+        setMessage({ type: "error", text: emailErr });
         toast.error(emailErr);
         return;
       }
@@ -90,37 +99,56 @@ export default function Otp() {
       };
 
       const response = await verifyOtp(payload);
-      console.log("OTP Verified successfully:", response);
 
       if (type === "reset") {
-        toast.success("Code verified! Set your new password.");
-        // If password reset flow, go to NewPassword page
-        navigate(
-          `/newpassword?email=${encodeURIComponent(
-            email
-          )}&code=${encodeURIComponent(data.otp)}`
-        );
+        // Success message for password reset
+        setMessage({
+          type: "success",
+          text: "Code verified successfully! Redirecting to set new password...",
+        });
+        toast.success("Code verified successfully!");
+
+        // Navigate after showing success message
+        setTimeout(() => {
+          navigate(
+            `/newpassword?email=${encodeURIComponent(
+              email
+            )}&code=${encodeURIComponent(data.otp)}`
+          );
+        }, 1500);
       } else {
-        // Handle backend response structure
+        // Handle registration flow
         const userData = response.data?.user || response.user;
         const token = response.data?.token || response.token;
 
-        // Auto-login user after successful verification (registration flow)
-        authLogin({
-          name: userData.name,
-          email: email,
-          token: token,
-          avatar: userData.profile_image || userData.avatar,
+        setMessage({
+          type: "success",
+          text: `Welcome ${userData.name}! Logging you in...`,
         });
-        toast.success(`Welcome to Safarni, ${userData.name}! ✨`);
+
+        // Auto-login after short delay
+        setTimeout(() => {
+          authLogin({
+            name: userData.name,
+            email: email,
+            token: token,
+            avatar: userData.profile_image || userData.avatar,
+          });
+          toast.success(`Welcome to Safarni, ${userData.name}! ✨`);
+        }, 1000);
       }
     } catch (err: any) {
       console.error("OTP verification error:", err);
       const errorMessage =
         err.response?.data?.message ||
         "Invalid or expired code. Please try again.";
-      setError(errorMessage);
+      setMessage({ type: "error", text: errorMessage });
       toast.error(errorMessage);
+
+      // Clear OTP inputs on error
+      setOtp(["", "", "", ""]);
+      setValue("otp", "");
+      inputRefs.current[0]?.focus();
     } finally {
       setIsLoading(false);
     }
@@ -131,11 +159,26 @@ export default function Otp() {
 
     try {
       setIsLoading(true);
+      setMessage({ type: null, text: "" });
+      
       await forgotPassword({ email });
+      
       setTimer(60);
-      toast.success("A new code has been sent to your email!");
+      setMessage({
+        type: "success",
+        text: "A new verification code has been sent to your email!",
+      });
+      toast.success("New code sent successfully!");
+
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setMessage({ type: null, text: "" });
+      }, 3000);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to resend code.");
+      const errorMsg =
+        err.response?.data?.message || "Failed to resend code. Please try again.";
+      setMessage({ type: "error", text: errorMsg });
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -192,10 +235,29 @@ export default function Otp() {
             </p>
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600 text-sm text-center">{error}</p>
+          {/* Message Alert (Success or Error) */}
+          {message.type && (
+            <div
+              className={`mb-6 p-4 rounded-lg border flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300 ${
+                message.type === "success"
+                  ? "bg-green-50 border-green-200"
+                  : "bg-red-50 border-red-200"
+              }`}
+            >
+              {message.type === "success" ? (
+                <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              ) : (
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              )}
+              <p
+                className={`text-sm flex-1 ${
+                  message.type === "success"
+                    ? "text-green-700"
+                    : "text-red-700"
+                }`}
+              >
+                {message.text}
+              </p>
             </div>
           )}
 
@@ -209,41 +271,46 @@ export default function Otp() {
                       if (el) inputRefs.current[index] = el;
                     }}
                     type="text"
+                    inputMode="numeric"
                     maxLength={1}
                     value={otp[index]}
                     onChange={(e) => handleChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
-                    className={`w-14 h-16 text-center text-2xl font-bold border-2 rounded-xl focus:border-[#1b3b82] focus:ring-0 transition-all bg-gray-50 focus:bg-white ${
-                      errors.otp ? "border-red-500" : "border-gray-200"
+                    disabled={isLoading}
+                    className={`w-14 h-16 text-center text-2xl font-bold border-2 rounded-xl focus:border-[#1b3b82] focus:ring-2 focus:ring-[#1b3b82] focus:ring-opacity-20 transition-all bg-gray-50 focus:bg-white disabled:opacity-50 disabled:cursor-not-allowed ${
+                      errors.otp
+                        ? "border-red-500"
+                        : message.type === "success"
+                        ? "border-green-500"
+                        : "border-gray-200"
                     }`}
                   />
                 ))}
               </div>
 
-              {/* Error Message */}
+              {/* Validation Error */}
               {errors.otp && (
-                <div className="text-center mb-4 min-h-5">
+                <div className="text-center mb-6">
                   <p className="text-red-500 text-sm">
                     {errors.otp.message?.toString()}
                   </p>
                 </div>
               )}
-              {!errors.otp && <div className="mb-4 min-h-5"></div>}
 
-              {/* Resend Link */}
+              {/* Resend Section */}
               <div className="text-center mb-8">
                 <p className="text-sm text-gray-600">
-                  OTP not received?{" "}
+                  Didn't receive the code?{" "}
                   {timer > 0 ? (
                     <span className="text-gray-400 font-medium">
-                      Resend in {timer}s
+                      Resend in {formatTime(timer)}
                     </span>
                   ) : (
                     <button
                       type="button"
                       onClick={handleResend}
                       disabled={isLoading}
-                      className="text-blue-600 hover:underline font-medium disabled:opacity-50"
+                      className="text-[#1b3b82] hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       Send again
                     </button>
@@ -254,8 +321,8 @@ export default function Otp() {
               {/* Verify Button */}
               <button
                 type="submit"
-                disabled={isLoading}
-                className="w-full bg-[#1b3b82] text-white py-3 rounded-lg font-semibold hover:bg-[#152e66] transition-all disabled:opacity-50 shadow-lg shadow-blue-100"
+                disabled={isLoading || otp.join("").length !== 4}
+                className="w-full bg-[#1b3b82] text-white py-3.5 rounded-lg font-semibold hover:bg-[#152e66] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-100 hover:shadow-xl"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -268,6 +335,13 @@ export default function Otp() {
               </button>
             </div>
           </form>
+
+          {/* Help Text */}
+          <div className="text-center text-sm text-gray-500">
+            <p>
+              Make sure to check your spam folder if you don't see the email in your inbox
+            </p>
+          </div>
         </div>
       </div>
     </div>

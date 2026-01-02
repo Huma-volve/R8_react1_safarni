@@ -1,5 +1,6 @@
 import { Search, SlidersHorizontal, LogOut } from "lucide-react";
 import { useState } from "react";
+import { NavLink, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { logout as logoutApi } from "@/services/post";
 
@@ -20,9 +21,7 @@ const Navbar = () => {
   const getInitials = (name: string) => {
     if (!name) return "??";
     const parts = name.trim().split(" ");
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-    }
+    if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     return name.substring(0, 2).toUpperCase();
   };
 
@@ -38,32 +37,38 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
+          {/* Desktop Links */}
           <div className="hidden md:flex items-center space-x-8 text-[20px] font-semibold">
-            <a
-              href="/"
-              className="text-blue-800 font-medium hover:text-blue-600 transition"
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                isActive ? "text-blue-600 font-bold" : "text-gray-700 hover:text-blue-600 transition"
+              }
             >
               Home
-            </a>
-            <a href="#" className="hover:text-blue-600 transition">
+            </NavLink>
+            <NavLink
+              to="/favorite"
+              className={({ isActive }) =>
+                isActive ? "text-blue-600 font-bold" : "text-gray-700 hover:text-blue-600 transition"
+              }
+            >
               Favorite
-            </a>
-            <a href="#" className="hover:text-blue-600 transition">
+            </NavLink>
+            <Link to="#" className="hover:text-blue-600 transition">
               Compare
-            </a>
-            <a href="#" className="hover:text-blue-600 transition">
+            </Link>
+            <Link to="/map" className="hover:text-blue-600 transition">
               Maps
-            </a>
+            </Link>
           </div>
 
-          {/* Right Side Icons */}
+          {/* Right Icons */}
           <div className="flex items-center space-x-4">
             <button className="p-2 hover:bg-gray-100 rounded-full transition">
               <Search className="w-5 h-5 text-gray-600" />
             </button>
 
-            {/* Sliders icon (all screens) */}
             <button
               className="p-2 hover:bg-gray-100 rounded-full transition"
               onClick={() => setOpenMenu(!openMenu)}
@@ -80,14 +85,12 @@ const Navbar = () => {
                     alt={user.name || "User"}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      // Fallback to initials if image fails
                       const target = e.currentTarget;
                       const parent = target.parentElement;
                       if (parent) {
                         target.style.display = "none";
                         const span = document.createElement("span");
-                        span.className =
-                          "text-white font-bold text-sm select-none";
+                        span.className = "text-white font-bold text-sm select-none";
                         span.innerText = getInitials(user?.name || "");
                         parent.appendChild(span);
                       }
@@ -99,7 +102,6 @@ const Navbar = () => {
                   </span>
                 )}
               </div>
-              {/* User name tooltip */}
               {user?.name && (
                 <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-10">
                   {user.name}
@@ -107,7 +109,7 @@ const Navbar = () => {
               )}
             </button>
 
-            {/* Logout Button */}
+            {/* Logout */}
             <button
               onClick={handleLogout}
               className="p-2 hover:bg-red-50 rounded-full transition group"
@@ -118,15 +120,11 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu (links only on small screens) */}
+        {/* Mobile Menu */}
         {openMenu && (
           <div className="md:hidden w-full mt-4 bg-white shadow-lg rounded-xl">
             <div className="flex justify-around py-4 text-lg font-medium">
-              <a
-                href="/"
-                onClick={() => setOpenMenu(false)}
-                className="text-blue-800"
-              >
+              <a href="/" onClick={() => setOpenMenu(false)} className="text-blue-800">
                 Home
               </a>
               <a href="#" onClick={() => setOpenMenu(false)}>
