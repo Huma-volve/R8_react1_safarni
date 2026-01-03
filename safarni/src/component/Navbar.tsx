@@ -2,6 +2,8 @@ import { Search, SlidersHorizontal, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { logout as logoutApi } from "@/services/post";
+import { useNavigate } from "react-router-dom";
+
 
 const Navbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -16,7 +18,9 @@ const Navbar = () => {
       logout(); // Clear local state and redirect
     }
   };
-
+ //navigation to profile page
+  const navigate = useNavigate();
+  
   const getInitials = (name: string) => {
     if (!name) return "??";
     const parts = name.trim().split(" ");
@@ -72,7 +76,7 @@ const Navbar = () => {
             </button>
 
             {/* User Avatar */}
-            <button className="relative group">
+            <button className="relative group"  onClick={() => navigate("/profile")}>
               <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center overflow-hidden ring-2 ring-blue-100 group-hover:ring-blue-400 transition shadow-sm">
                 {user?.avatar ? (
                   <img

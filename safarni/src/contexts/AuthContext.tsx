@@ -63,6 +63,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     }
 
+
+
+
+    
     // 2. Load user from localStorage
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("authToken");
@@ -108,6 +112,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     login,
     logout,
   };
+  
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

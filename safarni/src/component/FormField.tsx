@@ -6,17 +6,22 @@ interface Props {
   type: string;
   value?: string; 
   icon?: React.ReactNode;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  readOnly?: boolean;
 }
 
 const FormField: React.FC<Props> = ({
   label,
+  name,
+  type,
   value,
   icon,
+  onChange,
+  readOnly = false,
 }) => {
   return (
     <div className="relative">
-      <label className="mb-1 block text-sm font-medium text-[#373737] font-montserrat"
-     >
+      <label className="mb-1 block text-sm font-medium text-[#373737] font-montserrat">
         {label}
       </label>
 
@@ -28,11 +33,17 @@ const FormField: React.FC<Props> = ({
         )}
 
         <input
-          type="text"
+          type={type}
+          name={name}
           value={value}
-          readOnly
-          disabled
-          className="w-full rounded-lg border border-gray-200 px-10 py-2.5 text-sm bg-white cursor-default text-gray-500 font-poppins"
+          onChange={onChange}
+          readOnly={readOnly}
+          disabled={readOnly}
+          className={`w-full rounded-lg border border-gray-200 px-10 py-2.5 text-sm font-poppins ${
+            readOnly 
+              ? 'bg-white cursor-default text-gray-500' 
+              : 'bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+          }`}
         />
       </div>
     </div>

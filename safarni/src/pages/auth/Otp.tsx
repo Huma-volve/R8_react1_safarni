@@ -5,8 +5,8 @@ import { ChevronLeft, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { verifyOtp, forgotPassword } from "@/services/post";
-import type { VerifyOtpPayload } from "@/services/post";
+import { verifyOtp, forgotPassword, verifyReactivationOtp, resendOtp } from "@/services/post";
+import type { VerifyOtpPayload, VerifyReactivationOtpPayload } from "@/services/post";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "react-toastify";
 
@@ -84,6 +84,27 @@ export default function Otp() {
         return;
       }
 
+      // Handle reactivation flow
+      if (type === "reactivation") {
+        const payload: VerifyOtpPayload = {
+          email: email,
+          code: data.otp,
+        };
+
+        const response = await verifyOtp(payload);
+        console.log("Account reactivation response:", response);
+
+        // Backend returns success message: "Account reactivated successfully. You can now login."
+        if (response.success) {
+          toast.success(response.message || "Your account has been reactivated! Please login to continue.");
+          navigate('/login');
+        } else {
+          throw new Error(response.message || "Verification failed");
+        }
+        return;
+      }
+
+      // Handle regular verification flow
       const payload: VerifyOtpPayload = {
         email: email,
         code: data.otp,
@@ -131,7 +152,14 @@ export default function Otp() {
 
     try {
       setIsLoading(true);
-      await forgotPassword({ email });
+
+      // Use different endpoint based on type
+      if (type === "reactivation") {
+        await resendOtp({ email, type: "verification" });
+      } else {
+        await forgotPassword({ email });
+      }
+
       setTimer(60);
       toast.success("A new code has been sent to your email!");
     } catch (err: any) {
@@ -184,10 +212,12 @@ export default function Otp() {
               <Mail className="w-8 h-8 text-[#1b3b82]" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Verify your email
+              {type === "reactivation" ? "Reactivate your account" : "Verify your email"}
             </h1>
             <p className="text-gray-500">
-              Please enter the 4-digit code sent to{" "}
+              {type === "reactivation"
+                ? "Please enter the 4-digit code sent to reactivate your account at "
+                : "Please enter the 4-digit code sent to "}{" "}
               <span className="font-semibold text-gray-900">{email}</span>
             </p>
           </div>
@@ -213,9 +243,8 @@ export default function Otp() {
                     value={otp[index]}
                     onChange={(e) => handleChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
-                    className={`w-14 h-16 text-center text-2xl font-bold border-2 rounded-xl focus:border-[#1b3b82] focus:ring-0 transition-all bg-gray-50 focus:bg-white ${
-                      errors.otp ? "border-red-500" : "border-gray-200"
-                    }`}
+                    className={`w-14 h-16 text-center text-2xl font-bold border-2 rounded-xl focus:border-[#1b3b82] focus:ring-0 transition-all bg-gray-50 focus:bg-white ${errors.otp ? "border-red-500" : "border-gray-200"
+                      }`}
                   />
                 ))}
               </div>
