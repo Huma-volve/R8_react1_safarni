@@ -33,7 +33,9 @@ const GoogleCallback = () => {
       processedRef.current = true;
 
       try {
-        const result = await googleAuthCallback(code);
+        // Must match the redirect_uri sent in the initial request
+        const redirectUri = `${window.location.origin}/auth/google/callback`;
+        const result = await googleAuthCallback(code, redirectUri);
 
         if (result.success && result.data) {
           const { token, user } = result.data;
