@@ -7,6 +7,7 @@ import ForgetPassword from "./pages/auth/ForgetPassword";
 import Otp from "./pages/auth/Otp";
 import NewPassword from "./pages/auth/Newpassword";
 import Done from "./pages/auth/Done";
+import GoogleCallback from "./pages/auth/GoogleCallback";
 
 // Pages from Deployment branch
 import CarsBooking from "@/pages/CarBooking/CarsBooking";
@@ -41,7 +42,9 @@ function App() {
     "/forgot-password",
     "/otp",
     "/newpassword",
+    "/newpassword",
     "/done",
+    "/auth/google/callback",
   ];
 
   const isAuthRoute = authRoutes.includes(location.pathname);
@@ -110,6 +113,14 @@ function App() {
             element={
               <PublicRoute>
                 <NewPassword />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/auth/google/callback"
+            element={
+              <PublicRoute>
+                <GoogleCallback />
               </PublicRoute>
             }
           />

@@ -113,7 +113,11 @@ export default function Login() {
   const handleGoogleLogin = async () => {
     try {
       const { getGoogleAuthUrl } = await import("@/services/get");
-      const response = await getGoogleAuthUrl();
+      // The redirect_uri must match exactly what is registered in Google Console
+      // and what will be sent in the callback exchange.
+      // Using window.location.origin to support both localhost and production.
+      const redirectUri = `${window.location.origin}/auth/google/callback`;
+      const response = await getGoogleAuthUrl(redirectUri);
       // Redirect to Google OAuth URL
       window.location.href = response.url;
     } catch (err: any) {
