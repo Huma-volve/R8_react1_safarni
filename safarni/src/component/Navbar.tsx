@@ -160,6 +160,13 @@ const Navbar = () => {
                 Compare
               </Link>
               <Link
+                to="/flight-booking"
+                onClick={() => setOpenMenu(false)}
+                className="text-gray-700 font-medium text-lg hover:text-blue-600"
+              >
+                Flight Booking
+              </Link>
+              <Link
                 to="/map"
                 onClick={() => setOpenMenu(false)}
                 className="text-gray-700 font-medium text-lg hover:text-blue-600"

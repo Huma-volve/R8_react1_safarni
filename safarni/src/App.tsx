@@ -28,6 +28,7 @@ import Navbar from "./component/Navbar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { FlightBookingFlow } from "./pages/FlightBookingFlow";
 
 const queryClient = new QueryClient();
 
@@ -162,6 +163,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Favorite />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/flight-booking"
+            element={
+              <ProtectedRoute>
+                <FlightBookingFlow />
               </ProtectedRoute>
             }
           />
