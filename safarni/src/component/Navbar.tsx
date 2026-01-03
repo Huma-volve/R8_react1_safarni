@@ -21,7 +21,8 @@ const Navbar = () => {
   const getInitials = (name: string) => {
     if (!name) return "??";
     const parts = name.trim().split(" ");
-    if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    if (parts.length >= 2)
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     return name.substring(0, 2).toUpperCase();
   };
 
@@ -42,7 +43,9 @@ const Navbar = () => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold" : "text-gray-700 hover:text-blue-600 transition"
+                isActive
+                  ? "text-blue-600 font-bold"
+                  : "text-gray-700 hover:text-blue-600 transition"
               }
             >
               Home
@@ -50,7 +53,9 @@ const Navbar = () => {
             <NavLink
               to="/favorite"
               className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold" : "text-gray-700 hover:text-blue-600 transition"
+                isActive
+                  ? "text-blue-600 font-bold"
+                  : "text-gray-700 hover:text-blue-600 transition"
               }
             >
               Favorite
@@ -90,7 +95,8 @@ const Navbar = () => {
                       if (parent) {
                         target.style.display = "none";
                         const span = document.createElement("span");
-                        span.className = "text-white font-bold text-sm select-none";
+                        span.className =
+                          "text-white font-bold text-sm select-none";
                         span.innerText = getInitials(user?.name || "");
                         parent.appendChild(span);
                       }
@@ -122,20 +128,44 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {openMenu && (
-          <div className="md:hidden w-full mt-4 bg-white shadow-lg rounded-xl">
-            <div className="flex justify-around py-4 text-lg font-medium">
-              <a href="/" onClick={() => setOpenMenu(false)} className="text-blue-800">
+          <div className="md:hidden w-full mt-4 bg-white shadow-lg rounded-xl border border-gray-100">
+            <div className="flex justify-around items-center py-4">
+              <NavLink
+                to="/"
+                onClick={() => setOpenMenu(false)}
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-blue-600 font-bold text-lg"
+                    : "text-gray-700 font-medium text-lg hover:text-blue-600"
+                }
+              >
                 Home
-              </a>
-              <a href="#" onClick={() => setOpenMenu(false)}>
+              </NavLink>
+              <NavLink
+                to="/favorite"
+                onClick={() => setOpenMenu(false)}
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-blue-600 font-bold text-lg"
+                    : "text-gray-700 font-medium text-lg hover:text-blue-600"
+                }
+              >
                 Favorite
-              </a>
-              <a href="#" onClick={() => setOpenMenu(false)}>
+              </NavLink>
+              <Link
+                to="#"
+                onClick={() => setOpenMenu(false)}
+                className="text-gray-700 font-medium text-lg hover:text-blue-600"
+              >
                 Compare
-              </a>
-              <a href="#" onClick={() => setOpenMenu(false)}>
+              </Link>
+              <Link
+                to="/map"
+                onClick={() => setOpenMenu(false)}
+                className="text-gray-700 font-medium text-lg hover:text-blue-600"
+              >
                 Maps
-              </a>
+              </Link>
             </div>
           </div>
         )}
