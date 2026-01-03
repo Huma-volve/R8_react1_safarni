@@ -63,6 +63,12 @@ const Navbar = () => {
             <Link to="#" className="hover:text-blue-600 transition">
               Compare
             </Link>
+            <Link
+              to="/flight-booking"
+              className="hover:text-blue-600 transition"
+            >
+              Flight Booking
+            </Link>
             <Link to="/map" className="hover:text-blue-600 transition">
               Maps
             </Link>
