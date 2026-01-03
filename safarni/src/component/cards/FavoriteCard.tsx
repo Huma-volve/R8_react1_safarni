@@ -2,10 +2,11 @@ import { Heart, Star } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import pic from "@/assets/favpic.png"
 
-interface TourCardProps {
+interface FavoriteCard {
   title: string
-  image: string
+  image?: string
   rating: number
   type: string
   price: number
@@ -13,18 +14,17 @@ interface TourCardProps {
   className?: string
 }
 
-export function TourCard({ title, image, rating, type, price, isFavorite = false, className }: TourCardProps) {
+export default function FavoriteCard({ title, rating,type, price, isFavorite = false }: FavoriteCard) {
   return (
-    <Card className={cn("overflow-hidden border-none shadow-lg transition-all hover:shadow-xl rounded-3xl", className)}>
+    <Card className={cn("overflow-hidden border-none shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_5px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0_0_35px_rgba(0,0,0,0.1),0_0_25px_rgba(0,0,0,0.05)] rounded-3xl")}>
       <CardContent className="p-4 space-y-4">
         {/* Image Section */}
-        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden group">
-          {/* <Image
-            src={image || "/placeholder.svg"}
+        <div className="relative aspect-video rounded-2xl overflow-hidden group">          
+          <img
+            src={pic}
             alt={title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
-          /> */}
+            className="w-full h-full object-fit transition-transform duration-500 group-hover:scale-110"          
+            />
           <Button
             variant="secondary"
             size="icon"
