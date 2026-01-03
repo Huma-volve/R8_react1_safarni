@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "react-toastify";
+import { googleAuthCallback } from "@/services/get";
 
 const GoogleCallback = () => {
   const navigate = useNavigate();
@@ -10,47 +11,58 @@ const GoogleCallback = () => {
   const processedRef = useRef(false);
 
   useEffect(() => {
+    // Prevent double execution in React Strict Mode which might invalidate the code
     if (processedRef.current) return;
 
-    const params = new URLSearchParams(location.search);
-    const token = params.get("token");
-    const userStr = params.get("user");
+    const exchangeCodeForToken = async () => {
+      const params = new URLSearchParams(location.search);
+      const code = params.get("code");
 
-    if (token) {
-      processedRef.current = true;
-      let userData = {
-        token,
-        name: "User",
-        email: "",
-        avatar: undefined,
-      };
-
-      if (userStr) {
-        try {
-          const parsed = JSON.parse(userStr);
-          // Handle various possible backend response structures
-          const userObj = parsed.user || parsed;
-          userData = {
-            ...userData,
-            name: userObj.name || "User",
-            email: userObj.email || "",
-            avatar: userObj.avatar || userObj.profile_image || userObj.picture,
-          };
-        } catch (e) {
-          console.error("Failed to parse user data from Google callback", e);
+      if (!code) {
+        // If no code, check for error param or just fail
+        const error = params.get("error");
+        if (error) {
+          toast.error(`Google Login Error: ${error}`);
+        } else {
+          toast.error("No authentication code received from Google.");
         }
+        navigate("/login", { replace: true });
+        return;
       }
 
-      // Save to AuthContext
-      login(userData);
-      toast.success(`Welcome ${userData.name}!`);
+      processedRef.current = true;
 
-      // Redirect to home
-      navigate("/", { replace: true });
-    } else {
-      toast.error("Google authentication failed. No token received.");
-      navigate("/login", { replace: true });
-    }
+      try {
+        // Must match the redirect_uri sent in the initial request
+        const redirectUri = `${window.location.origin}/auth/google/callback`;
+        const result = await googleAuthCallback(code, redirectUri);
+
+        if (result.success && result.data) {
+          const { token, user } = result.data;
+
+          // Construct user data for context
+          const userData = {
+            token,
+            name: user.name || "User",
+            email: user.email || "",
+            avatar: user.avatar || user.profile_image || user.picture,
+            ...user, // Spread other fields just in case
+          };
+
+          login(userData);
+          toast.success(`Welcome ${userData.name}!`);
+          navigate("/", { replace: true });
+        } else {
+          throw new Error(result.message || "Authentication failed");
+        }
+      } catch (error: any) {
+        console.error("Google Auth Error:", error);
+        toast.error(error.message || "Failed to complete Google Login");
+        navigate("/login", { replace: true });
+      }
+    };
+
+    exchangeCodeForToken();
   }, [location, login, navigate]);
 
   return (
@@ -61,7 +73,7 @@ const GoogleCallback = () => {
           Authenticating...
         </h2>
         <p className="text-gray-600">
-          Please wait while we log you in with Google.
+          Please wait while we complete your secure login.
         </p>
       </div>
     </div>
