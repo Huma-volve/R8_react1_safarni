@@ -74,7 +74,9 @@ export default function Login() {
 
       if (isDeleted) {
         // Redirect to signup to restore deleted account
-        toast.info("Your account was deleted. You can restore it by registering again with the same email address.");
+        toast.info(
+          "Your account was deleted. You can restore it by registering again with the same email address."
+        );
         navigate(`/signup?email=${encodeURIComponent(data.email)}`);
         return;
       }
@@ -91,14 +93,20 @@ export default function Login() {
         // Send OTP to user's email for account reactivation
         try {
           await resendOtp({ email: data.email, type: "verification" });
-          toast.info("A verification code has been sent to your email. Please enter it to reactivate your account.");
+          toast.info(
+            "A verification code has been sent to your email. Please enter it to reactivate your account."
+          );
         } catch (otpErr: any) {
           console.error("Failed to send OTP:", otpErr);
-          toast.warning("Please check your email for the verification code to reactivate your account.");
+          toast.warning(
+            "Please check your email for the verification code to reactivate your account."
+          );
         }
 
         // Redirect to OTP verification for account reactivation
-        navigate(`/otp?email=${encodeURIComponent(data.email)}&type=reactivation`);
+        navigate(
+          `/otp?email=${encodeURIComponent(data.email)}&type=reactivation`
+        );
         return;
       }
 
@@ -108,7 +116,6 @@ export default function Login() {
       setIsLoading(false);
     }
   };
-
 
   const handleGoogleLogin = async () => {
     try {
@@ -183,9 +190,11 @@ export default function Login() {
                 <input
                   type="email"
                   {...register("email")}
+                  autoComplete="email"
                   placeholder="kneeDue@untitledui.com"
-                  className={`w-full px-4 py-3 border ${errors.email ? "border-red-500" : "border-gray-300"
-                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400`}
+                  className={`w-full px-4 py-3 border ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400`}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1">
@@ -203,9 +212,11 @@ export default function Login() {
                   <input
                     type={showPassword ? "text" : "password"}
                     {...register("password")}
+                    autoComplete="current-password"
                     placeholder="••••••••••"
-                    className={`w-full px-4 py-3 border ${errors.password ? "border-red-500" : "border-gray-300"
-                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                    className={`w-full px-4 py-3 border ${
+                      errors.password ? "border-red-500" : "border-gray-300"
+                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                   />
                   <button
                     type="button"
