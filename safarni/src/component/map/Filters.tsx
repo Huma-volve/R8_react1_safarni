@@ -59,7 +59,7 @@ const Filters: React.FC<FiltersProps> = ({
   ] as const;
 
   return (
-    <div className="fixed top-0 sm:top-4 left-0 right-0 z-999 px-3 sm:px-4 pointer-events-none">
+    <div className="absolute top-4 left-0 right-0 z-[1000] px-3 sm:px-4 pointer-events-none">
       {/* Main Container with width constraint */}
       <div className="w-full max-w-7xl mx-auto">
         {/* Mobile Top Bar */}
