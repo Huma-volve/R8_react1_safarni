@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import loginImage from "@/assets/login.png";
 import { ChevronLeft, Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { login as loginUser } from "@/services/post";
+import { login as loginUser, resendOtp } from "@/services/post";
 import type { LoginPayload } from "@/services/post";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "react-toastify";
@@ -20,6 +20,7 @@ const schema = yup.object().shape({
 });
 
 export default function Login() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +62,46 @@ export default function Login() {
       console.error("Login error:", err);
       const errorMessage =
         err.response?.data?.message || "Login failed. Please try again.";
+
+      // Check if account is deleted (soft deleted)
+      // Backend returns 401 Unauthorized for deleted accounts
+      const statusCode = err.response?.status;
+      const isDeleted =
+        statusCode === 401 &&
+        (errorMessage.toLowerCase().includes("deleted") ||
+          errorMessage.toLowerCase().includes("not found") ||
+          err.response?.data?.status === "deleted");
+
+      if (isDeleted) {
+        // Redirect to signup to restore deleted account
+        toast.info("Your account was deleted. You can restore it by registering again with the same email address.");
+        navigate(`/signup?email=${encodeURIComponent(data.email)}`);
+        return;
+      }
+
+      // Check if account is deactivated
+      // Backend returns 403 Forbidden for deactivated accounts
+      const isDeactivated =
+        statusCode === 403 ||
+        errorMessage.toLowerCase().includes("deactivated") ||
+        errorMessage.toLowerCase().includes("inactive") ||
+        err.response?.data?.status === "deactivated";
+
+      if (isDeactivated) {
+        // Send OTP to user's email for account reactivation
+        try {
+          await resendOtp({ email: data.email, type: "verification" });
+          toast.info("A verification code has been sent to your email. Please enter it to reactivate your account.");
+        } catch (otpErr: any) {
+          console.error("Failed to send OTP:", otpErr);
+          toast.warning("Please check your email for the verification code to reactivate your account.");
+        }
+
+        // Redirect to OTP verification for account reactivation
+        navigate(`/otp?email=${encodeURIComponent(data.email)}&type=reactivation`);
+        return;
+      }
+
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -68,10 +109,15 @@ export default function Login() {
     }
   };
 
+
   const handleGoogleLogin = async () => {
     try {
       const { getGoogleAuthUrl } = await import("@/services/get");
-      const response = await getGoogleAuthUrl();
+      // The redirect_uri must match exactly what is registered in Google Console
+      // and what will be sent in the callback exchange.
+      // Using window.location.origin to support both localhost and production.
+      const redirectUri = `${window.location.origin}/auth/google/callback`;
+      const response = await getGoogleAuthUrl(redirectUri);
       // Redirect to Google OAuth URL
       window.location.href = response.url;
     } catch (err: any) {
@@ -138,9 +184,8 @@ export default function Login() {
                   type="email"
                   {...register("email")}
                   placeholder="kneeDue@untitledui.com"
-                  className={`w-full px-4 py-3 border ${
-                    errors.email ? "border-red-500" : "border-gray-300"
-                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400`}
+                  className={`w-full px-4 py-3 border ${errors.email ? "border-red-500" : "border-gray-300"
+                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400`}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1">
@@ -159,9 +204,8 @@ export default function Login() {
                     type={showPassword ? "text" : "password"}
                     {...register("password")}
                     placeholder="••••••••••"
-                    className={`w-full px-4 py-3 border ${
-                      errors.password ? "border-red-500" : "border-gray-300"
-                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                    className={`w-full px-4 py-3 border ${errors.password ? "border-red-500" : "border-gray-300"
+                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                   />
                   <button
                     type="button"

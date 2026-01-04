@@ -43,8 +43,9 @@ function App() {
     "/forgot-password",
     "/otp",
     "/newpassword",
+    "/newpassword",
     "/done",
-    "/google/callback",
+    "/auth/google/callback",
   ];
 
   const isAuthRoute = authRoutes.includes(location.pathname);
@@ -117,7 +118,7 @@ function App() {
             }
           />
           <Route
-            path="/google/callback"
+            path="/auth/google/callback"
             element={
               <PublicRoute>
                 <GoogleCallback />

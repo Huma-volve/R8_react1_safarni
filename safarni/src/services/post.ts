@@ -45,7 +45,14 @@ export const resetPassword = async (data: ResetPasswordPayload) => {
 };
 
 export const logout = async () => {
-  const response = await api.post("/auth/logout");
+  const token = localStorage.getItem("authToken");
+
+  const response = await api.post("/auth/logout", {}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
   return response.data;
 };
 
@@ -55,5 +62,26 @@ export interface ForgotPasswordPayload {
 
 export const forgotPassword = async (data: ForgotPasswordPayload) => {
   const response = await api.post("/auth/forgot-password", data);
+  return response.data;
+};
+
+export interface VerifyReactivationOtpPayload {
+  email: string;
+  code: string;
+  type: "verification";
+}
+
+export const verifyReactivationOtp = async (data: VerifyReactivationOtpPayload) => {
+  const response = await api.post("/auth/verify-reset-otp", data);
+  return response.data;
+};
+
+export interface ResendOtpPayload {
+  email: string;
+  type: "verification";
+}
+
+export const resendOtp = async (data: ResendOtpPayload) => {
+  const response = await api.post("/auth/resend-otp", data);
   return response.data;
 };
