@@ -5,8 +5,16 @@ import { ChevronLeft, Mail, CheckCircle, AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { verifyOtp, forgotPassword } from "@/services/post";
-import type { VerifyOtpPayload } from "@/services/post";
+import {
+  verifyOtp,
+  forgotPassword,
+  verifyReactivationOtp,
+  resendOtp,
+} from "@/services/post";
+import type {
+  VerifyOtpPayload,
+  VerifyReactivationOtpPayload,
+} from "@/services/post";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "react-toastify";
 
@@ -93,6 +101,30 @@ export default function Otp() {
         return;
       }
 
+      // Handle reactivation flow
+      if (type === "reactivation") {
+        const payload: VerifyOtpPayload = {
+          email: email,
+          code: data.otp,
+        };
+
+        const response = await verifyOtp(payload);
+        console.log("Account reactivation response:", response);
+
+        // Backend returns success message: "Account reactivated successfully. You can now login."
+        if (response.success) {
+          toast.success(
+            response.message ||
+              "Your account has been reactivated! Please login to continue."
+          );
+          navigate("/login");
+        } else {
+          throw new Error(response.message || "Verification failed");
+        }
+        return;
+      }
+
+      // Handle regular verification flow
       const payload: VerifyOtpPayload = {
         email: email,
         code: data.otp,
@@ -159,10 +191,13 @@ export default function Otp() {
 
     try {
       setIsLoading(true);
-      setMessage({ type: null, text: "" });
-      
-      await forgotPassword({ email });
-      
+      // Use different endpoint based on type
+      if (type === "reactivation") {
+        await resendOtp({ email, type: "verification" });
+      } else {
+        setMessage({ type: null, text: "" });
+        await forgotPassword({ email });
+      }
       setTimer(60);
       setMessage({
         type: "success",
@@ -176,7 +211,8 @@ export default function Otp() {
       }, 3000);
     } catch (err: any) {
       const errorMsg =
-        err.response?.data?.message || "Failed to resend code. Please try again.";
+        err.response?.data?.message ||
+        "Failed to resend code. Please try again.";
       setMessage({ type: "error", text: errorMsg });
       toast.error(errorMsg);
     } finally {
@@ -227,10 +263,14 @@ export default function Otp() {
               <Mail className="w-8 h-8 text-[#1b3b82]" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Verify your email
+              {type === "reactivation"
+                ? "Reactivate your account"
+                : "Verify your email"}
             </h1>
             <p className="text-gray-500">
-              Please enter the 4-digit code sent to{" "}
+              {type === "reactivation"
+                ? "Please enter the 4-digit code sent to reactivate your account at "
+                : "Please enter the 4-digit code sent to "}{" "}
               <span className="font-semibold text-gray-900">{email}</span>
             </p>
           </div>
@@ -251,9 +291,7 @@ export default function Otp() {
               )}
               <p
                 className={`text-sm flex-1 ${
-                  message.type === "success"
-                    ? "text-green-700"
-                    : "text-red-700"
+                  message.type === "success" ? "text-green-700" : "text-red-700"
                 }`}
               >
                 {message.text}
@@ -339,7 +377,8 @@ export default function Otp() {
           {/* Help Text */}
           <div className="text-center text-sm text-gray-500">
             <p>
-              Make sure to check your spam folder if you don't see the email in your inbox
+              Make sure to check your spam folder if you don't see the email in
+              your inbox
             </p>
           </div>
         </div>
